@@ -10,7 +10,7 @@
             <connections>
                 <outlet property="contents" destination="37" id="79"/>
                 <outlet property="display" destination="81" id="83"/>
-                <outlet property="sendView" destination="aKr-nE-NwA" id="g2y-zW-wB2"/>
+                <outlet property="sendViewPlaceholder" destination="aKr-nE-NwA" id="9ZE-oE-Y1V"/>
                 <outlet property="splitView" destination="86" id="0uM-nB-9S1"/>
             </connections>
         </customObject>
@@ -51,41 +51,9 @@
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                         </scrollView>
-                        <customView id="aKr-nE-NwA" customClass="CQSendView">
+                        <customView id="aKr-nE-NwA">
                             <rect key="frame" x="0.0" y="296" width="480" height="26"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <subviews>
-                                <scrollView misplaced="YES" borderType="none" horizontalLineScroll="0.0" horizontalPageScroll="0.0" verticalLineScroll="0.0" verticalPageScroll="0.0" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" id="aDd-35-2nj">
-                                    <rect key="frame" x="0.0" y="0.0" width="480" height="26"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <clipView key="contentView" id="dG3-GW-hh1">
-                                        <rect key="frame" x="0.0" y="0.0" width="480" height="26"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <customView id="bix-c4-ekp" customClass="MVTextView">
-                                                <rect key="frame" x="0.0" y="0.0" width="480" height="27"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <connections>
-                                                    <outlet property="delegate" destination="aKr-nE-NwA" id="dt4-r8-Vrl"/>
-                                                </connections>
-                                            </customView>
-                                        </subviews>
-                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    </clipView>
-                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.17543859779834747" horizontal="YES" id="70u-If-1j2">
-                                        <rect key="frame" x="-100" y="-100" width="129" height="11"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                    </scroller>
-                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.75862067937850952" horizontal="NO" id="MGe-HF-D0Z">
-                                        <rect key="frame" x="-100" y="-100" width="15" height="58"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                    </scroller>
-                                </scrollView>
-                            </subviews>
-                            <connections>
-                                <outlet property="delegate" destination="-2" id="dw3-Iu-9KF"/>
-                                <outlet property="sendTextView" destination="bix-c4-ekp" id="TCW-ID-77C"/>
-                            </connections>
                         </customView>
                     </subviews>
                     <holdingPriorities>

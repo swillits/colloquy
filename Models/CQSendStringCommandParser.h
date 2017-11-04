@@ -14,16 +14,18 @@ NS_ASSUME_NONNULL_BEGIN
 // If it's a plain message, only message is non-nil.
 // If it's a command, message is nil, command is non-nil, and arguments may be nil.
 @interface CQSendCommandAndArgs : NSObject
-@property (readwrite, copy, nullable) NSString * message; 
+@property (readwrite, copy, nullable) NSAttributedString * message;
+@property (readwrite, assign) BOOL isAction;
+
 @property (readwrite, copy, nullable) NSString * command;
 @property (readwrite, copy, nullable) NSAttributedString * arguments;
-+ (instancetype)message:(NSString *)message;
++ (instancetype)message:(NSAttributedString *)message isAction:(BOOL)isAction;
 + (instancetype)command:(NSString *)command andArguments:(NSAttributedString * _Nullable)arguments;
 @end
 
 
 @interface CQSendStringCommandParser : NSObject
-+ (NSArray<CQSendCommandAndArgs*> *)parseString:(NSAttributedString *)stringToSend;
++ (NSArray<CQSendCommandAndArgs*> *)parseString:(NSAttributedString *)stringToSend asAction:(BOOL)asAction;
 @end
 
 

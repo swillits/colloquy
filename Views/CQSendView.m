@@ -8,27 +8,30 @@
 
 #import "CQSendView.h"
 #import "MVTextView.h"
+#import "CQInlineEmoticonButton.h"
 #import "CQSendHistory.h"
 #import "CQSendStringCommandParser.h"
+#import "JVChatMessage.h"
 
 
 
-@interface CQSendView () <NSTextViewDelegate>
+@interface CQSendViewController () <MVTextViewDelegate>
 @end
 
 
 
-@implementation CQSendView
+@implementation CQSendViewController
 {
 	MVTextView * __unsafe_unretained _sendTextView;
+	CQInlineEmoticonButton * __unsafe_unretained _emoticonButton;
 	CQSendHistory * _history;
 }
 
 
 
-- (instancetype)initWithFrame:(NSRect)frameRect
+- (instancetype)init
 {
-	if (!(self = [super initWithFrame:frameRect])) {
+	if (!(self = [super init])) {
 		return nil;
 	}
 	
@@ -39,19 +42,38 @@
 
 
 
-- (void)awakeFromNib
+- (NSString *)nibName
 {
+	return @"CQSendView";
+}
+
+
+
+- (void)loadView
+{
+	[super loadView];
+	
+	
+	self.emoticonButton.toolTip = NSLocalizedString( @"Emoticons", "choose emoticons inline button" );
+	
 	[_sendTextView setUsesSystemCompleteOnTab:[[NSUserDefaults standardUserDefaults] boolForKey:@"JVUsePantherTextCompleteOnTab"]];
-	[_sendTextView setContinuousSpellCheckingEnabled:NO];
-	[_sendTextView setUsesFontPanel:NO];
+	
+	[_sendTextView setContinuousSpellCheckingEnabled:NO]; // NO in Console, but YES elsewhere? 
 	[_sendTextView setUsesRuler:NO];
 	[_sendTextView setAllowsUndo:YES];
 	[_sendTextView setImportsGraphics:NO];
-	[_sendTextView setUsesFindPanel:NO];
 	[_sendTextView setUsesFontPanel:NO];
+	
+	[_sendTextView setSelectable:YES];
+	[_sendTextView setEditable:YES];
+	
+	[_sendTextView setRichText:YES]; // NO in Console, but YES elsewhere?
+	[_sendTextView setUsesFontPanel:YES]; // NO in Console, but YES elsewhere.
+	
 	[_sendTextView reset:nil];
-	self.wantsLayer = YES;
-	self.layer.backgroundColor = _sendTextView.backgroundColor.CGColor;
+	
+	self.view.wantsLayer = YES;
+	self.view.layer.backgroundColor = _sendTextView.backgroundColor.CGColor;
 }
 
 
@@ -70,9 +92,27 @@
 	}
 }
 
+
 - (NSAttributedString *)stringToSend
 {
+	[_sendTextView.textStorage.mutableString replaceOccurrencesOfString:@"\r" withString:@"\n" options:NSLiteralSearch range:NSMakeRange(0, _sendTextView.string.length)];
 	return [_sendTextView.textStorage copy];
+}
+
+
+- (BOOL)stringToSendIsACommand
+{
+	return [_sendTextView.string hasPrefix:@"/"] && ![_sendTextView.string hasPrefix:@"//"];
+}
+
+
+- (void)insertEmoticon:(NSString *)emoticon
+{
+	if (_sendTextView.string.length > 0) {
+		[_sendTextView replaceCharactersInRange:NSMakeRange(_sendTextView.string.length, 0) withString:@" "];
+	}
+	
+	[_sendTextView replaceCharactersInRange:NSMakeRange(_sendTextView.string.length, 0) withString:[NSString stringWithFormat:@"%@ ", emoticon]];
 }
 
 
@@ -93,10 +133,10 @@
 	
 	const CGFloat MIN_HEIGHT_FOR_TRANSCRIPT_AREA = 75.0;
 	const CGFloat MIN_HEIGHT_FOR_SEND_AREA = 22.0;
-	NSSplitView * splitView = (NSSplitView *)self.superview;
+	NSSplitView * splitView = (NSSplitView *)self.view.superview;
 	
 	NSRect splitViewFrame = splitView.frame;
-	NSRect sendViewFrame = self.frame;
+	NSRect sendViewFrame = self.view.frame;
 	NSSize contentSize = _sendTextView.minimumSizeForContent;
 	CGFloat dividerThickness = splitView.dividerThickness;
 	CGFloat maxContentHeight = (NSHeight(splitViewFrame) - dividerThickness - MIN_HEIGHT_FOR_TRANSCRIPT_AREA);
@@ -127,7 +167,7 @@
 		sendViewFrame.origin.y = NSHeight( displayFrame ) + dividerThickness;
 		
 		displayView.frame = displayFrame;
-		self.frame = sendViewFrame;
+		self.view.frame = sendViewFrame;
 		
 		[splitView adjustSubviews];
 	}
@@ -141,16 +181,49 @@
 
 - (BOOL)textView:(NSTextView *)textView enterKeyPressed:(NSEvent *)event
 {
-	[self.delegate sendViewRequestedSend:self];
-	return YES;
+	BOOL handled = NO;
+	
+	if (_sendTextView.hasMarkedText) {
+		handled = NO;
+		
+	} else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatSendOnEnter"] ) {
+		[self.delegate sendViewRequestedSend:self options:0];
+		handled = YES;
+		
+	} else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatActionOnEnter"] ) {
+		[self.delegate sendViewRequestedSend:self options:CQSendViewSendAsAction];
+		handled = YES;
+	}
+	
+	return handled;
 }
 
 
 
 - (BOOL)textView:(NSTextView *)textView returnKeyPressed:(NSEvent *)event
 {
-	[self.delegate sendViewRequestedSend:self];
-	return YES;
+	BOOL handled = NO;
+	
+	if (_sendTextView.hasMarkedText) {
+		handled = NO;
+		
+	} else if ((event.modifierFlags & NSAlternateKeyMask) != 0) {
+		handled = NO;
+		
+	} else  if((event.modifierFlags & NSControlKeyMask) != 0 ) {
+		[self.delegate sendViewRequestedSend:self options:CQSendViewSendAsAction];
+		handled = YES;
+		
+	} else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatSendOnReturn"] ) {
+		[self.delegate sendViewRequestedSend:self options:0];
+		handled = YES;
+		
+	} else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatActionOnReturn"] ) {
+		[self.delegate sendViewRequestedSend:self options:CQSendViewSendAsAction];
+		handled = YES;
+	}
+	
+	return handled;
 }
 
 
@@ -178,6 +251,12 @@
 		return [self downArrowKeyPressed];
 	}
 	
+	// TODO-SW: This was in JVDirectChatPanel but not Console
+	//	} else if( chr == NSPageUpFunctionKey || chr == NSPageDownFunctionKey || chr == NSHomeFunctionKey || chr == NSBeginFunctionKey || chr == NSEndFunctionKey ) {
+	//		[[[[display mainFrame] findFrameNamed:@"content"] frameView] keyDown:event];
+	//		return YES;
+	//	}
+	
 	return NO;
 }
 
@@ -185,6 +264,14 @@
 
 - (NSArray *)textView:(NSTextView *)textView stringCompletionsForPrefix:(NSString *)prefix
 {
+	// TODO-SW: See CQSendCompletion
+	return nil;
+}
+	
+	
+- (NSArray *) textView:(NSTextView *) textView completions:(NSArray *) words forPartialWordRange:(NSRange) charRange indexOfSelectedItem:(NSInteger *) index
+{
+	// TODO-SW: See CQSendCompletion
 	return nil;
 }
 
@@ -192,7 +279,13 @@
 
 - (BOOL)textView:(NSTextView *)textView escapeKeyPressed:(NSEvent *)event
 {
-	[_sendTextView reset:nil];
+	// TODO-SW: JVDirectChat does this test, but console just always called reset:
+	if (_sendTextView.string.length == 0 && ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputRetainsFormatting"]) {
+		[_sendTextView reset:nil];
+	} else {
+		[_sendTextView setString:@""];
+	}
+	
 	return YES;
 }
 
@@ -200,6 +293,11 @@
 
 - (void)textDidChange:(NSNotification *)notification
 {
+	if (_sendTextView.string.length == 0 && ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputRetainsFormatting"]) {
+		[_sendTextView reset:nil];
+	}
+	
+	
 	// The user physically typed into the field, so reset history so that now we're back at head.
 	[self.history goToHead];
 	
@@ -238,28 +336,102 @@
 #pragma mark -
 #pragma mark Sending
 
-- (void)sendWithConnection:(MVChatConnection *)connection inView:(id<JVChatViewController>)chatView
+- (void)sendWithConnection:(MVChatConnection *)connection asAction:(BOOL)asAction inView:(id<JVChatViewController>)chatView
 {
 	NSAttributedString * stringToSend = self.stringToSend;
 	if (stringToSend.length == 0) {
 		return;
 	}
 	
-	[self.history addToHistory:stringToSend];
-	self.stringToSend = nil;
+	if (![self confirmSendingLargeMessage:stringToSend.string]) {
+		return;
+	}
 	
-	NSArray<CQSendCommandAndArgs*> * commands = [CQSendStringCommandParser parseString:stringToSend];
+	[self.history addToHistory:stringToSend];
+	{
+		NSDictionary * typingAttributes = _sendTextView.typingAttributes;
+		
+		self.stringToSend = nil;
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputRetainsFormatting"]) {
+			_sendTextView.typingAttributes = typingAttributes;
+		}
+	}
+	
+	
+	// NOTE: it's really not clear to me when we should send directly to the connection or not.
+	// JVChatConsolePanel always did, so it continues to do so.
+	// JVDirectChatPanel did for commands, but then /me didn't work because the _sendCommand:withArguments:withEncoding:toTarget: in MVIRCChatConnection which was called, had a nil target which meant the command didn't work right.
+	// For now JVChatConsolePanel continues to send direct to the connection, and JVDirectChatPanel implements the delegate methods to send through the "target" to the connection.
+	// There's probably a better way to do this once there's better understanding.
+	
+	
+	NSArray<CQSendCommandAndArgs*> * commands = [CQSendStringCommandParser parseString:stringToSend asAction:asAction];
 	for (CQSendCommandAndArgs * command in commands) {
 		if (command.command) {
 			if (![CQSendCommandAndArgs processUserCommand:command toConnection:connection inView:chatView]) {
-				[connection sendCommand:command.command withArguments:command.arguments];
+				if (connection.isConnected) {
+					
+					if ([self.delegate respondsToSelector:@selector(sendView:sendCommand:withArguments:)]) {
+						[self.delegate sendView:self sendCommand:command.command withArguments:command.arguments];
+					} else {
+						[connection sendCommand:command.command withArguments:command.arguments];
+					}
+				}
 			}
 		} else {
-			[connection sendCommand:command.message withArguments:command.arguments];
+			
+			if ([self.delegate respondsToSelector:@selector(sendView:sendMessage:asAction:)]) {
+				[self.delegate sendView:self sendMessage:command.message asAction:command.isAction];
+			} else {
+				[connection sendCommand:command.message.string withArguments:command.arguments];
+			}
 		}
 	}
 }
 
 
 
+
+
+
+- (BOOL)confirmSendingLargeMessage:(NSString *)stringToSend
+{
+	// ask if the user really wants to send a message with lots of newlines.
+	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"JVWarnOnLargeMessages"]) {
+		return YES;
+	}
+	
+	NSUInteger newlineCount = 0;
+	NSUInteger messageLimit = 5;
+	
+	NSArray *lines = [stringToSend componentsSeparatedByString:@"\n"];
+	
+	for( NSString *line in lines ) {
+		if( [line length] ) newlineCount++;
+	}
+	
+	if ( [[[NSUserDefaults standardUserDefaults] objectForKey:@"JVWarnOnLargeMessageLimit"] unsignedIntValue] > 1 ) {
+		messageLimit = [[[NSUserDefaults standardUserDefaults] objectForKey:@"JVWarnOnLargeMessageLimit"] unsignedIntValue];
+	}
+	
+	if ( newlineCount > messageLimit ) {
+		NSAlert *alert = [[NSAlert alloc] init];
+		[alert setMessageText:NSLocalizedString( @"Multiple lines detected", "multiple lines detected alert dialog title")];
+		[alert setInformativeText:[NSString stringWithFormat:NSLocalizedString( @"You are about to send a message with %d lines. Are you sure you want to do this?", "about to send a %d line message alert dialog message" ), newlineCount]];
+		[alert addButtonWithTitle:NSLocalizedString( @"Send", "Send alert dialog button title" )];
+		[alert addButtonWithTitle:NSLocalizedString( @"Cancel", "Cancel alert dialog button title" )];
+		[alert setAlertStyle:NSWarningAlertStyle];
+		
+		if ( [alert runModal] == NSAlertSecondButtonReturn ) {
+			return NO;
+		}
+	}
+	
+	return YES;
+}
+
+
 @end
+
+

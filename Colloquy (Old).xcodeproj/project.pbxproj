@@ -240,6 +240,8 @@
 		5D3B84F01FAE3B5800B1D70C /* CQSendView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */; };
 		5D3B84F31FAE3E3400B1D70C /* CQSendHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */; };
 		5D3B84F61FAE41B000B1D70C /* CQSendStringCommandParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */; };
+		5D3B84F91FAE639F00B1D70C /* CQSendCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */; };
+		5DBEFD1D1FAE6D2C001D5759 /* CQSendView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */; };
 		891E8467123F0AEF00EC3C0F /* NSCharacterSetAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */; };
 		891EF3D1106426CB00CCEA35 /* PFMoveApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */; };
 		89EB91AA0F269BEF0028B3E3 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89EB91A90F269BEF0028B3E3 /* Sparkle.framework */; };
@@ -750,6 +752,9 @@
 		5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendHistory.m; path = Models/CQSendHistory.m; sourceTree = "<group>"; };
 		5D3B84F41FAE41B000B1D70C /* CQSendStringCommandParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendStringCommandParser.h; path = Models/CQSendStringCommandParser.h; sourceTree = "<group>"; };
 		5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendStringCommandParser.m; path = Models/CQSendStringCommandParser.m; sourceTree = "<group>"; };
+		5D3B84F71FAE639F00B1D70C /* CQSendCompletion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendCompletion.h; path = Models/CQSendCompletion.h; sourceTree = "<group>"; };
+		5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendCompletion.m; path = Models/CQSendCompletion.m; sourceTree = "<group>"; };
+		5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CQSendView.xib; path = Resources/CQSendView.xib; sourceTree = "<group>"; };
 		891E8465123F0AEF00EC3C0F /* NSCharacterSetAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSCharacterSetAdditions.h; path = Additions/NSCharacterSetAdditions.h; sourceTree = "<group>"; };
 		891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSCharacterSetAdditions.m; path = Additions/NSCharacterSetAdditions.m; sourceTree = "<group>"; };
 		891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplicationController.m; path = Controllers/PFMoveApplicationController.m; sourceTree = "<group>"; };
@@ -1373,8 +1378,11 @@
 				1C0730D106777678008D8AD9 /* ESFloater.h */,
 				1C415F250B350CA300239EB3 /* JVToolbarItem.m */,
 				1C415F240B350CA300239EB3 /* JVToolbarItem.h */,
+				5D3B84F71FAE639F00B1D70C /* CQSendCompletion.h */,
+				5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */,
 				5D3B84EE1FAE3B5800B1D70C /* CQSendView.h */,
 				5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */,
+				5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */,
 				5D3B84F11FAE3E3400B1D70C /* CQSendHistory.h */,
 				5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */,
 				5D3B84F41FAE41B000B1D70C /* CQSendStringCommandParser.h */,
@@ -2045,6 +2053,7 @@
 				CB66DEA30631F8160034F76E /* Stickies.png in Resources */,
 				1CE95886063F3BF90071C9C3 /* inspector.png in Resources */,
 				1CA75A270652537A000141D5 /* styleOptions.plist in Resources */,
+				5DBEFD1D1FAE6D2C001D5759 /* CQSendView.xib in Resources */,
 				1C238F050677B5E5000E89A7 /* JVTabbedChatWindow.xib in Resources */,
 				1C2391BC0677E8F1000E89A7 /* aquaTabBackground.png in Resources */,
 				1C2391BD0677E8F1000E89A7 /* aquaTabClose.png in Resources */,
@@ -2241,6 +2250,7 @@
 				5D3B84F01FAE3B5800B1D70C /* CQSendView.m in Sources */,
 				1CB2CD73052DDC560094AAA4 /* MVTableView.m in Sources */,
 				1CB2CD74052DDC560094AAA4 /* JVChatTranscriptPanel.m in Sources */,
+				5D3B84F91FAE639F00B1D70C /* CQSendCompletion.m in Sources */,
 				1CB2CD77052DDC560094AAA4 /* JVChatConsolePanel.m in Sources */,
 				1C1ACE440533943900F71D4E /* JVInspectorController.m in Sources */,
 				1C1ACFB805344FCC00F71D4E /* JVConnectionInspector.m in Sources */,

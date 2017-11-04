@@ -9,6 +9,8 @@
 @class MVChatUserWatchRule;
 @class JVMutableChatMessage;
 @class JVBuddy;
+@class CQSendViewController;
+@class JVSplitView;
 
 extern NSString *JVToolbarTextEncodingItemIdentifier;
 extern NSString *JVToolbarClearScrollbackItemIdentifier;
@@ -21,7 +23,9 @@ extern NSString *JVChatEventMessageWasProcessedNotification;
 COLLOQUY_EXPORT
 @interface JVDirectChatPanel : JVChatTranscriptPanel <WebUIDelegate, WebPolicyDelegate> {
 	@protected
-	IBOutlet MVTextView *send;
+	IBOutlet JVSplitView * sendDisplaySplitView;
+	IBOutlet NSView * sendViewPlaceholder;
+	CQSendViewController * sendViewController;
 
 	id _target;
 	NSStringEncoding _encoding;
@@ -78,13 +82,11 @@ COLLOQUY_EXPORT
 
 - (IBAction) send:(id) sender;
 - (void) sendMessage:(JVMutableChatMessage *) message;
-- (BOOL) processUserCommand:(NSString *) command withArguments:(NSAttributedString *) arguments;
 
 - (IBAction) clear:(id) sender;
 - (IBAction) clearDisplay:(id) sender;
 - (IBAction) markDisplay:(id) sender;
 
-- (void) textDidChange:(NSNotification *) notification;
 @end
 
 @interface NSObject (MVChatPluginDirectChatSupport)

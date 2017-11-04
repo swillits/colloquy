@@ -1,6 +1,6 @@
 #import "JVChatConsolePanel.h"
 #import "JVChatController.h"
-//#import "MVTextView.h"
+#import "MVTextView.h"
 #import "JVSplitView.h"
 #import "CQSendView.h"
 
@@ -25,7 +25,8 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 	IBOutlet JVSplitView * splitView;
 	IBOutlet NSView *contents;
 	IBOutlet NSTextView *display;
-	IBOutlet CQSendView * sendView;
+	IBOutlet NSView * sendViewPlaceholder;
+	CQSendViewController * sendViewController;
 	BOOL _nibLoaded;
 	BOOL _verbose;
 	BOOL _ignorePRIVMSG;
@@ -44,7 +45,9 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 - (id) initWithConnection:(MVChatConnection *) connection {
 	if( ( self = [self init] ) ) {
 		
-
+		sendViewController = [[CQSendViewController alloc] init];
+		sendViewController.delegate = self;
+		
 		_sendHeight = 25.;
 		
 		_paused = NO;
@@ -67,7 +70,9 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 
 - (void) awakeFromNib {
 	
-
+	[sendViewPlaceholder.superview replaceSubview:sendViewPlaceholder with:sendViewController.view];
+	sendViewPlaceholder = nil;
+	
 	[display setEditable:NO];
 	[display setContinuousSpellCheckingEnabled:NO];
 	[display setUsesFontPanel:NO];
@@ -129,7 +134,7 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 }
 
 - (NSResponder *) firstResponder {
-	return sendView.sendTextView;
+	return sendViewController.sendTextView;
 }
 
 #pragma mark -
@@ -217,7 +222,7 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 	if( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputAutoResizes"] ) {
 		[splitView setPositionUsingName:@"JVChatSplitViewPosition"];
 	} else {
-		[sendView resizeToFit];
+		[sendViewController resizeToFit];
 	}
 }
 
@@ -332,7 +337,7 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 
 #pragma mark -
 
-- (void)sendViewRequestedSend:(CQSendView *)theSendView
+- (void)sendViewRequestedSend:(CQSendViewController *)sendVC options:(CQSendViewOptions)options
 {
 	[self send:nil];
 }
@@ -350,12 +355,12 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 	}
 	
 	[self resume];
-	[sendView sendWithConnection:self.connection inView:self];
+	[sendViewController sendWithConnection:self.connection asAction:NO inView:self];
 	[self performScrollToBottom];
 }
 
 
-- (void)sendViewWillResize:(CQSendView *)theSendView
+- (void)sendViewWillResize:(CQSendViewController *)sendVC
 {
 	// Before the resize happens, take note of whether the chat transcript is "at the bottom",
 	// and then in didResize, ensure it scrolls to the bottom if it should.
@@ -363,7 +368,7 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 }
 
 
-- (void)sendViewDidResize:(CQSendView *)theSendView
+- (void)sendViewDidResize:(CQSendViewController *)sendVC
 {
 	if (_scrollerIsAtBottom) {
 		[self performScrollToBottom];
@@ -476,7 +481,7 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 
 - (void) splitViewDidResizeSubviews:(NSNotification *) notification {
 	// Cache the height of the send box so we can keep it constant during window resizes.
-	NSRect sendFrame = sendView.frame;
+	NSRect sendFrame = sendViewController.view.frame;
 	_sendHeight = sendFrame.size.height;
 
 	if( _scrollerIsAtBottom )
@@ -503,7 +508,7 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 
 	// We need to resize the scroll view frames of the webview and the textview.
 	// The scroll views are two superviews up: NSTextView(WebView) -> NSClipView -> NSScrollView
-	NSRect sendFrame = sendView.frame;
+	NSRect sendFrame = sendViewController.view.frame;
 	NSRect displayFrame = [[display enclosingScrollView] frame];
 
 	// Set size of the web view to the maximum size possible
@@ -517,7 +522,7 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 	sendFrame.origin.y = NSHeight( displayFrame ) + dividerThickness;
 
 	// Commit the changes
-	[sendView setFrame:sendFrame];
+	[sendViewController.view setFrame:sendFrame];
 	[[display enclosingScrollView] setFrame:displayFrame];
 }
 @end
