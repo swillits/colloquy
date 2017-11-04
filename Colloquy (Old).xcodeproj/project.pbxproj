@@ -236,6 +236,10 @@
 		1CF8030F070C893500C9B54C /* libsilcclient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF8030D070C893500C9B54C /* libsilcclient.framework */; };
 		1CF80310070C894100C9B54C /* libsilc.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF8030C070C893500C9B54C /* libsilc.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1CF80311070C894100C9B54C /* libsilcclient.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF8030D070C893500C9B54C /* libsilcclient.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5D3B84ED1FAE375100B1D70C /* CQInlineEmoticonButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84EC1FAE375100B1D70C /* CQInlineEmoticonButton.m */; };
+		5D3B84F01FAE3B5800B1D70C /* CQSendView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */; };
+		5D3B84F31FAE3E3400B1D70C /* CQSendHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */; };
+		5D3B84F61FAE41B000B1D70C /* CQSendStringCommandParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */; };
 		891E8467123F0AEF00EC3C0F /* NSCharacterSetAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */; };
 		891EF3D1106426CB00CCEA35 /* PFMoveApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */; };
 		89EB91AA0F269BEF0028B3E3 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89EB91A90F269BEF0028B3E3 /* Sparkle.framework */; };
@@ -738,6 +742,14 @@
 		1CF79CBD07AC77E600696918 /* JVChatTranscript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JVChatTranscript.m; path = Models/JVChatTranscript.m; sourceTree = "<group>"; };
 		1CF8030C070C893500C9B54C /* libsilc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = libsilc.framework; sourceTree = "<group>"; };
 		1CF8030D070C893500C9B54C /* libsilcclient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = libsilcclient.framework; sourceTree = "<group>"; };
+		5D3B84EB1FAE375100B1D70C /* CQInlineEmoticonButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQInlineEmoticonButton.h; path = Views/CQInlineEmoticonButton.h; sourceTree = "<group>"; };
+		5D3B84EC1FAE375100B1D70C /* CQInlineEmoticonButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQInlineEmoticonButton.m; path = Views/CQInlineEmoticonButton.m; sourceTree = "<group>"; };
+		5D3B84EE1FAE3B5800B1D70C /* CQSendView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendView.h; path = Views/CQSendView.h; sourceTree = "<group>"; };
+		5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendView.m; path = Views/CQSendView.m; sourceTree = "<group>"; };
+		5D3B84F11FAE3E3400B1D70C /* CQSendHistory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendHistory.h; path = Models/CQSendHistory.h; sourceTree = "<group>"; };
+		5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendHistory.m; path = Models/CQSendHistory.m; sourceTree = "<group>"; };
+		5D3B84F41FAE41B000B1D70C /* CQSendStringCommandParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendStringCommandParser.h; path = Models/CQSendStringCommandParser.h; sourceTree = "<group>"; };
+		5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendStringCommandParser.m; path = Models/CQSendStringCommandParser.m; sourceTree = "<group>"; };
 		891E8465123F0AEF00EC3C0F /* NSCharacterSetAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSCharacterSetAdditions.h; path = Additions/NSCharacterSetAdditions.h; sourceTree = "<group>"; };
 		891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSCharacterSetAdditions.m; path = Additions/NSCharacterSetAdditions.m; sourceTree = "<group>"; };
 		891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplicationController.m; path = Controllers/PFMoveApplicationController.m; sourceTree = "<group>"; };
@@ -1361,6 +1373,14 @@
 				1C0730D106777678008D8AD9 /* ESFloater.h */,
 				1C415F250B350CA300239EB3 /* JVToolbarItem.m */,
 				1C415F240B350CA300239EB3 /* JVToolbarItem.h */,
+				5D3B84EE1FAE3B5800B1D70C /* CQSendView.h */,
+				5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */,
+				5D3B84F11FAE3E3400B1D70C /* CQSendHistory.h */,
+				5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */,
+				5D3B84F41FAE41B000B1D70C /* CQSendStringCommandParser.h */,
+				5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */,
+				5D3B84EB1FAE375100B1D70C /* CQInlineEmoticonButton.h */,
+				5D3B84EC1FAE375100B1D70C /* CQInlineEmoticonButton.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2218,6 +2238,7 @@
 				1CB2CD6F052DDC560094AAA4 /* JVChatController.m in Sources */,
 				1CB2CD71052DDC560094AAA4 /* JVChatRoomMember.m in Sources */,
 				1CB2CD72052DDC560094AAA4 /* JVDirectChatPanel.m in Sources */,
+				5D3B84F01FAE3B5800B1D70C /* CQSendView.m in Sources */,
 				1CB2CD73052DDC560094AAA4 /* MVTableView.m in Sources */,
 				1CB2CD74052DDC560094AAA4 /* JVChatTranscriptPanel.m in Sources */,
 				1CB2CD77052DDC560094AAA4 /* JVChatConsolePanel.m in Sources */,
@@ -2252,8 +2273,11 @@
 				1C0730CC0677765B008D8AD9 /* AICustomTabDragging.m in Sources */,
 				1C0730CE0677765B008D8AD9 /* AICustomTabDragWindow.m in Sources */,
 				1C0730D00677765B008D8AD9 /* AICustomTabsView.m in Sources */,
+				5D3B84ED1FAE375100B1D70C /* CQInlineEmoticonButton.m in Sources */,
+				5D3B84F61FAE41B000B1D70C /* CQSendStringCommandParser.m in Sources */,
 				1C0730D406777678008D8AD9 /* ESFloater.m in Sources */,
 				1C0730E50677A63B008D8AD9 /* NSImageAdditions.m in Sources */,
+				5D3B84F31FAE3E3400B1D70C /* CQSendHistory.m in Sources */,
 				1C2391AA0677E6B7000E89A7 /* JVChatTabItem.m in Sources */,
 				1C96E93F06AADBBD0013B0A9 /* JVTranscriptPreferencesViewController.m in Sources */,
 				1C6A112B06BC0C9E00A66340 /* NSAttributedStringMoreAdditions.m in Sources */,
