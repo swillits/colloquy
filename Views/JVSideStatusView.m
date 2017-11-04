@@ -14,7 +14,8 @@
 }
 
 - (void) drawRect:(NSRect) rect {
-	[[NSImage imageNamed:@"sidebarStatusAreaBackground"] tileInRect:rect];
+	NSImage * bg = [NSImage imageNamed:@"sidebarStatusAreaBackground"];
+	[bg drawInRect:self.bounds fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
 
 	if( splitView ) {
 		NSImage *resizeImage = [NSImage imageNamed:@"sidebarResizeWidget"];

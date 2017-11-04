@@ -14,8 +14,8 @@ extern NSString *JVChatViewPboardType;
 	@protected
 	IBOutlet NSDrawer *viewsDrawer;
 	IBOutlet NSOutlineView *chatViewsOutlineView;
-	IBOutlet MVMenuButton *viewActionButton;
-	IBOutlet MVMenuButton *favoritesButton;
+	IBOutlet NSButton *viewActionButton;
+	IBOutlet NSButton *favoritesButton;
 	NSString *_identifier;
 	NSMutableDictionary *_settings;
 	NSMutableArray *_views;
