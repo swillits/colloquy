@@ -249,13 +249,12 @@
 		return [self upArrowKeyPressed];
 	} else if( chr == NSDownArrowFunctionKey && ( usesOnlyArrows || [event modifierFlags] & NSAlternateKeyMask ) ) {
 		return [self downArrowKeyPressed];
+	} else if( chr == NSPageUpFunctionKey || chr == NSPageDownFunctionKey || chr == NSHomeFunctionKey || chr == NSBeginFunctionKey || chr == NSEndFunctionKey ) {
+		if ([self.delegate respondsToSelector:@selector(sendView:navigationKeyPressed:)]) {
+			[self.delegate sendView:self navigationKeyPressed:event];
+			return YES;
+		}
 	}
-	
-	// TODO-SW: This was in JVDirectChatPanel but not Console
-	//	} else if( chr == NSPageUpFunctionKey || chr == NSPageDownFunctionKey || chr == NSHomeFunctionKey || chr == NSBeginFunctionKey || chr == NSEndFunctionKey ) {
-	//		[[[[display mainFrame] findFrameNamed:@"content"] frameView] keyDown:event];
-	//		return YES;
-	//	}
 	
 	return NO;
 }
@@ -279,7 +278,6 @@
 
 - (BOOL)textView:(NSTextView *)textView escapeKeyPressed:(NSEvent *)event
 {
-	// TODO-SW: JVDirectChat does this test, but console just always called reset:
 	if (_sendTextView.string.length == 0 && ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputRetainsFormatting"]) {
 		[_sendTextView reset:nil];
 	} else {

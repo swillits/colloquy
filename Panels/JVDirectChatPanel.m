@@ -1013,6 +1013,13 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 }
 
 
+- (void)sendView:(CQSendViewController *)sendView navigationKeyPressed:(NSEvent *)event
+{
+	[[[[display mainFrame] findFrameNamed:@"content"] frameView] keyDown:event];
+}
+
+
+
 
 #pragma mark -
 #pragma mark Input Handling

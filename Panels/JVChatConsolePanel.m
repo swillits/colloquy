@@ -376,6 +376,13 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 }
 
 
+- (void)sendView:(CQSendViewController *)sendView navigationKeyPressed:(NSEvent *)event
+{
+	// For some reason this doesn't scroll the textview as expected...
+	//[display keyDown:event];
+}
+
+
 
 
 
