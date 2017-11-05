@@ -504,8 +504,8 @@ static const NSStringEncoding supportedEncodings[] = {
 static void reachabilityCallback( SCNetworkReachabilityRef target, SCNetworkConnectionFlags flags, void *context ) {
 	MVChatConnection *connection = (__bridge MVChatConnection *)context;
 
-	BOOL reachable = ( flags & kSCNetworkFlagsReachable );
-	BOOL connectionRequired = ( flags & kSCNetworkFlagsConnectionRequired );
+	BOOL reachable = ( flags & kSCNetworkFlagsReachable ) != 0;
+	BOOL connectionRequired = ( flags & kSCNetworkFlagsConnectionRequired ) != 0;
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 	if( flags & kSCNetworkReachabilityFlagsIsWWAN ) connectionRequired = NO;
