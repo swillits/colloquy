@@ -3,6 +3,7 @@
 #import "JVChatWindowController.h"
 #import "JVSidebarChatWindowController.h"
 #import "JVTabbedChatWindowController.h"
+#import "CQStreamlinedChatWindowController.h"
 #import "JVChatViewCriterionController.h"
 #import "JVNotificationController.h"
 #import "JVChatTranscriptPanel.h"
@@ -187,9 +188,19 @@ static NSMenu *smartTranscriptMenu = nil;
 
 - (JVChatWindowController *) createChatWindowController {
 	JVChatWindowController *windowController = nil;
-	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"JVChatWindowInterface"] == 1 )
+	
+	NSInteger interface = [[NSUserDefaults standardUserDefaults] integerForKey:@"JVChatWindowInterface"];
+	
+	if (interface == 3) {
+		windowController = [[CQStreamlinedChatWindowController alloc] init];
+	} else if (interface == 2) {
+		windowController = [[JVSidebarChatWindowController alloc] init];
+	} else if (interface == 1) {
 		windowController = [[JVTabbedChatWindowController alloc] init];
-	else windowController = [[JVSidebarChatWindowController alloc] init];
+	} else {
+		windowController = [[JVSidebarChatWindowController alloc] init];
+	} 
+	
 	if( windowController )
 		[_chatWindows addObject:windowController];
 	return windowController;

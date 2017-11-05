@@ -9,6 +9,8 @@
 #import "JVTranscriptCriterionController.h"
 #import "JVViewCell.h"
 #import "JVStyleView.h"
+#import "JVChatProtocols.h"
+
 
 static JVTranscriptFindWindowController *sharedInstance = nil;
 

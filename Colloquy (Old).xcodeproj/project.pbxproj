@@ -244,8 +244,12 @@
 		5D3B84F91FAE639F00B1D70C /* CQSendCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */; };
 		5DBEFD1D1FAE6D2C001D5759 /* CQSendView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */; };
 		5DF1F6661FAE97E9003F66B1 /* CQEmoticonMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */; };
+		5DF1F69B1FAEEA3B003F66B1 /* CQStreamlinedChatWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF1F69A1FAEEA3B003F66B1 /* CQStreamlinedChatWindowController.m */; };
+		5DF1F69D1FAEEAF7003F66B1 /* CQStreamlinedChatWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DF1F69C1FAEEAF7003F66B1 /* CQStreamlinedChatWindowController.xib */; };
 		5DF1F6A01FAEEDFE003F66B1 /* JVClassicChatWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF1F69F1FAEEDFE003F66B1 /* JVClassicChatWindowController.m */; };
 		5DFE89471FAF77590064CB61 /* JVChatWindowScripting.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DFE89461FAF77590064CB61 /* JVChatWindowScripting.m */; };
+		5DFE894A1FAFB84B0064CB61 /* CQStreamlinedRoomSelectorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DFE89491FAFB84B0064CB61 /* CQStreamlinedRoomSelectorView.m */; };
+		5DFE894F1FAFD8940064CB61 /* JVChatProtocols.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DFE894E1FAFD8930064CB61 /* JVChatProtocols.m */; };
 		891E8467123F0AEF00EC3C0F /* NSCharacterSetAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */; };
 		891EF3D1106426CB00CCEA35 /* PFMoveApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */; };
 		89EB91AA0F269BEF0028B3E3 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89EB91A90F269BEF0028B3E3 /* Sparkle.framework */; };
@@ -763,10 +767,17 @@
 		5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CQSendView.xib; path = Resources/CQSendView.xib; sourceTree = "<group>"; };
 		5DF1F6641FAE97E9003F66B1 /* CQEmoticonMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQEmoticonMenu.h; path = Views/CQEmoticonMenu.h; sourceTree = "<group>"; };
 		5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQEmoticonMenu.m; path = Views/CQEmoticonMenu.m; sourceTree = "<group>"; };
+		5DF1F6991FAEEA3B003F66B1 /* CQStreamlinedChatWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQStreamlinedChatWindowController.h; path = Controllers/CQStreamlinedChatWindowController.h; sourceTree = "<group>"; };
+		5DF1F69A1FAEEA3B003F66B1 /* CQStreamlinedChatWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQStreamlinedChatWindowController.m; path = Controllers/CQStreamlinedChatWindowController.m; sourceTree = "<group>"; };
+		5DF1F69C1FAEEAF7003F66B1 /* CQStreamlinedChatWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CQStreamlinedChatWindowController.xib; path = Resources/CQStreamlinedChatWindowController.xib; sourceTree = "<group>"; };
 		5DF1F69E1FAEEDFE003F66B1 /* JVClassicChatWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JVClassicChatWindowController.h; path = Controllers/JVClassicChatWindowController.h; sourceTree = "<group>"; };
 		5DF1F69F1FAEEDFE003F66B1 /* JVClassicChatWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JVClassicChatWindowController.m; path = Controllers/JVClassicChatWindowController.m; sourceTree = "<group>"; };
 		5DFE89451FAF77590064CB61 /* JVChatWindowScripting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JVChatWindowScripting.h; path = Controllers/JVChatWindowScripting.h; sourceTree = "<group>"; };
 		5DFE89461FAF77590064CB61 /* JVChatWindowScripting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JVChatWindowScripting.m; path = Controllers/JVChatWindowScripting.m; sourceTree = "<group>"; };
+		5DFE89481FAFB84B0064CB61 /* CQStreamlinedRoomSelectorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQStreamlinedRoomSelectorView.h; path = Views/CQStreamlinedRoomSelectorView.h; sourceTree = "<group>"; };
+		5DFE89491FAFB84B0064CB61 /* CQStreamlinedRoomSelectorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQStreamlinedRoomSelectorView.m; path = Views/CQStreamlinedRoomSelectorView.m; sourceTree = "<group>"; };
+		5DFE894B1FAFD84E0064CB61 /* JVChatProtocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JVChatProtocols.h; path = Controllers/JVChatProtocols.h; sourceTree = "<group>"; };
+		5DFE894E1FAFD8930064CB61 /* JVChatProtocols.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JVChatProtocols.m; path = Controllers/JVChatProtocols.m; sourceTree = "<group>"; };
 		891E8465123F0AEF00EC3C0F /* NSCharacterSetAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSCharacterSetAdditions.h; path = Additions/NSCharacterSetAdditions.h; sourceTree = "<group>"; };
 		891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSCharacterSetAdditions.m; path = Additions/NSCharacterSetAdditions.m; sourceTree = "<group>"; };
 		891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplicationController.m; path = Controllers/PFMoveApplicationController.m; sourceTree = "<group>"; };
@@ -1512,8 +1523,15 @@
 				1CE2BC53042F75FB00000102 /* JVChatController.h */,
 				1CE2BC1E042F4AD300000102 /* JVChatWindowController.m */,
 				1CE2BC1D042F4AD300000102 /* JVChatWindowController.h */,
+				5DFE894B1FAFD84E0064CB61 /* JVChatProtocols.h */,
+				5DFE894E1FAFD8930064CB61 /* JVChatProtocols.m */,
 				5DFE89451FAF77590064CB61 /* JVChatWindowScripting.h */,
 				5DFE89461FAF77590064CB61 /* JVChatWindowScripting.m */,
+				5DF1F6991FAEEA3B003F66B1 /* CQStreamlinedChatWindowController.h */,
+				5DF1F69A1FAEEA3B003F66B1 /* CQStreamlinedChatWindowController.m */,
+				5DF1F69C1FAEEAF7003F66B1 /* CQStreamlinedChatWindowController.xib */,
+				5DFE89481FAFB84B0064CB61 /* CQStreamlinedRoomSelectorView.h */,
+				5DFE89491FAFB84B0064CB61 /* CQStreamlinedRoomSelectorView.m */,
 				5DF1F69E1FAEEDFE003F66B1 /* JVClassicChatWindowController.h */,
 				5DF1F69F1FAEEDFE003F66B1 /* JVClassicChatWindowController.m */,
 				1C710A0009F23730007B4515 /* JVSidebarChatWindowController.m */,
@@ -2038,6 +2056,7 @@
 				1C8BDD2205436A030035B84A /* JVChatMemberInspector.xib in Resources */,
 				1CBC63190548975E009E59E1 /* GeneralPreferences.png in Resources */,
 				92C70D1B1A5E898100080E45 /* console.pdf in Resources */,
+				5DF1F69D1FAEEAF7003F66B1 /* CQStreamlinedChatWindowController.xib in Resources */,
 				1CC6FC70054A02F70075807C /* BehaviorPreferences.png in Resources */,
 				1CC6FCD3054A25050075807C /* FileTransferPreferences.png in Resources */,
 				1CC6FCD5054A2BF80075807C /* AppearancePreferences.png in Resources */,
@@ -2292,6 +2311,7 @@
 				1C9982B90604D94C006C6417 /* JVNotificationController.m in Sources */,
 				1CB37172060CC7E200F6A81F /* KABubbleWindowController.m in Sources */,
 				1CB3717A060CC81C00F6A81F /* KABubbleWindowView.m in Sources */,
+				5DFE894F1FAFD8940064CB61 /* JVChatProtocols.m in Sources */,
 				1C94370B0639F86700618CD9 /* JVMarkedScroller.m in Sources */,
 				1C06052606471FFB002438AF /* JVMixedTableColumn.m in Sources */,
 				19937ADB1AEAAC71005D6C44 /* CQKeychain.m in Sources */,
@@ -2306,6 +2326,7 @@
 				1C0730CE0677765B008D8AD9 /* AICustomTabDragWindow.m in Sources */,
 				1C0730D00677765B008D8AD9 /* AICustomTabsView.m in Sources */,
 				5D3B84ED1FAE375100B1D70C /* CQInlineEmoticonButton.m in Sources */,
+				5DF1F69B1FAEEA3B003F66B1 /* CQStreamlinedChatWindowController.m in Sources */,
 				5D3B84F61FAE41B000B1D70C /* CQSendStringCommandParser.m in Sources */,
 				1C0730D406777678008D8AD9 /* ESFloater.m in Sources */,
 				1C0730E50677A63B008D8AD9 /* NSImageAdditions.m in Sources */,
@@ -2321,6 +2342,7 @@
 				5DF1F6A01FAEEDFE003F66B1 /* JVClassicChatWindowController.m in Sources */,
 				1C9014C107A2D798002942A7 /* MVChatUserAdditions.m in Sources */,
 				1CF79CBF07AC77E600696918 /* JVChatTranscript.m in Sources */,
+				5DFE894A1FAFB84B0064CB61 /* CQStreamlinedRoomSelectorView.m in Sources */,
 				1C5EF35B07B45C1F004E66D3 /* JVChatEvent.m in Sources */,
 				1C5EF36C07B45FBF004E66D3 /* JVChatSession.m in Sources */,
 				1C66913A07BFA76D008400F7 /* JVEmoticonSet.m in Sources */,

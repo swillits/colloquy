@@ -12,6 +12,7 @@ extern NSString *JVToolbarToggleChatDrawerItemIdentifier;
 extern NSString *JVChatViewPboardType;
 
 
+extern NSString * JVChatWindowControllerChatViewsDidChangeNotificationName;
 
 
 
@@ -27,26 +28,22 @@ extern NSString *JVChatViewPboardType;
 @interface JVChatWindowController : NSWindowController <JVInspectionDelegator, NSMenuDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate, NSToolbarDelegate, NSWindowDelegate> 
 
 
+
 @property (readwrite, copy) NSString * identifier;
 
 
-@property (readonly) NSString * userDefaultsPreferencesKey;
-- (void) setPreference:(id) value forKey:(NSString *) key;
-- (id) preferenceForKey:(NSString *) key;
 
-
-
-
-
-//! Returns which controller is currently shown in the window
-@property (readonly) id <JVChatViewController> activeChatViewController;
-
-
-//! To be called only by subclasses when they actually change which controller is active. The high level method to display a particular chat is `showChatViewController:` 
-- (void)changeActiveChatViewController:(id <JVChatViewController>)controller;
+/*
+ 
+ 	Major Interface Methods
+ 
+ */
 
 //! Makes the given view controller become active and displays it. Must be implemented by subclasses and should eventually trigger the call to changeActiveChatViewController: if the chat view is shown.
 - (void)showChatViewController:(id <JVChatViewController>)controller;
+
+//! To be called only by subclasses when they actually change which controller is active. The high level method to display a particular chat is `showChatViewController:` 
+- (void)changeActiveChatViewController:(id <JVChatViewController>)controller;
 
 //! Swapping in the active one
 - (void)updateInterfaceSwappingOutChatViewController:(id<JVChatViewController>)old;
@@ -60,16 +57,17 @@ extern NSString *JVChatViewPboardType;
  
  */
 
-
 // ------------------------------------------------
 // Access to the chat view controllers
 // ------------------------------------------------
+
+//! Returns which controller is currently shown in the window
+@property (readonly) id <JVChatViewController> activeChatViewController;
 
 - (NSArray *)allChatViewControllers;
 - (id <JVChatViewController>)chatViewControllerForIdentifier:(NSString *)identifier;
 - (NSArray *)chatViewControllersForConnection:(MVChatConnection *)connection;
 - (NSArray *)chatViewControllersWithControllerClass:(Class)class;
-
 
 
 
@@ -97,6 +95,7 @@ extern NSString *JVChatViewPboardType;
 // ------------------------------------------------
 // Subclasses can override these
 // ------------------------------------------------
+// Subclasses should always call super.
 
 - (void)willAddChatViewController:(id <JVChatViewController>)controller;
 - (void)didAddChatViewController:(id <JVChatViewController>)controller;
@@ -107,15 +106,8 @@ extern NSString *JVChatViewPboardType;
 - (void)chatViewControllerWillBecomeActive:(id <JVChatViewController>)controller;
 - (void)chatViewControllerDidBecomeActive:(id <JVChatViewController>)controller;
 
-//! Called after any one or more chat view controllers are added or removed from the window
+//! Called after any one or more chat view controllers are added or removed from the window. Subclasses should always call super.
 - (void)chatViewControllersDidChange;
-
-
-
-
-
-
-
 
 
 
@@ -126,8 +118,6 @@ extern NSString *JVChatViewPboardType;
  
  */
 
-
-
 //! Called when the window is key.
 //! Subclasses can override to tweak menu bar menu items which depend on a chat window being active
 - (void)claimMenuBarItems;
@@ -135,12 +125,6 @@ extern NSString *JVChatViewPboardType;
 //! Called when the window will resign key.
 //! Subclasses can override to tweak menu bar menu items which depend on a chat window being active
 - (void)resignMenuBarItems;
-
-
-//! Called when preferences changed, and the window should update whatever needs handling.
-- (void)preferencesDidChange;
-
-
 
 
 
@@ -169,78 +153,23 @@ extern NSString *JVChatViewPboardType;
  	Helpers
  
  */
+
+@property (readonly) NSString * userDefaultsPreferencesKey;
+
+- (void)setPreference:(id)value forKey:(NSString *)key;
+- (id)preferenceForKey:(NSString *)key;
+
+//! Called when preferences change and the window should update whatever needs handling.
+- (void)preferencesDidChange;
+
+
+//! Opens the inspector for the given object
 - (void)showInspectorForObject:(id<JVInspection>)object;
 
-
 @end
 
 
 
-
-
-
-
-
-//! Posted whenever view controller info changes, which might be displayed and therefor needs redisplay.
-extern NSString * const JVChatViewControllerInfoDidChangeNotificationName;
-
-@protocol JVChatViewController <JVChatListItem>
-@optional
-- (id <JVChatViewController>) activeChatViewController;
-
-@required
-- (MVChatConnection *) connection;
-
-- (JVChatWindowController *) windowController;
-- (void) setWindowController:(JVChatWindowController *) controller;
-
-- (NSView *) view;
-- (NSResponder *) firstResponder;
-- (NSString *) toolbarIdentifier;
-- (NSString *) windowTitle;
-- (NSString *) identifier;
-
-
-@optional
-- (void) willSelect;
-- (void) didSelect;
-
-- (void) willUnselect;
-- (void) didUnselect;
-
-- (void) willDispose;
-
-//! Called at certain times when the view has been seen by the user (eg, the window becomes key while the view controller is visible) 
-- (void)didGetNoticedByUser;
-@end
-
-
-
-
-
-
-// JVCatViewController, JVChatRoomMember
-@protocol JVChatListItem <NSObject>
-- (id <JVChatListItem>) parent;
-- (NSImage *) icon;
-- (NSString *) title;
-
-
-@optional
-
-- (BOOL) acceptsDraggedFileOfType:(NSString *) type;
-- (void) handleDraggedFile:(NSString *) path;
-- (IBAction) doubleClicked:(id) sender;
-- (BOOL) isEnabled;
-
-- (NSMenu *) menu;
-- (NSString *) information;
-- (NSString *) toolTip;
-- (NSImage *) statusImage;
-
-- (NSUInteger) numberOfChildren;
-- (id) childAtIndex:(NSUInteger) index;
-@end
 
 
 

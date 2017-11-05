@@ -3,6 +3,8 @@
 #import "MVApplicationController.h"
 #import "AICustomTabsView.h"
 #import "JVChatTabItem.h"
+#import "JVChatProtocols.h"
+
 
 @interface JVTabbedChatWindowController (JVTabbedChatWindowControllerPrivate)
 - (void) _supressTabBarHiding:(BOOL) supress;

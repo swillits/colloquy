@@ -1,6 +1,8 @@
 #import "JVChatTranscriptPanel.h"
+#import "JVChatProtocols.h"
 
-@interface JVSmartTranscriptPanel : JVChatTranscriptPanel <NSCoding, NSTableViewDataSource, NSTableViewDelegate> {
+
+@interface JVSmartTranscriptPanel : JVChatTranscriptPanel <JVCanHaveNewMessages, NSCoding, NSTableViewDataSource, NSTableViewDelegate> {
 	IBOutlet NSWindow *settingsSheet;
 	IBOutlet NSTableView *subviewTableView;
 	IBOutlet NSPopUpButton *operation;
@@ -22,7 +24,6 @@
 
 - (NSMutableArray *) rules;
 
-- (NSUInteger) newMessagesWaiting;
 - (void) matchMessage:(JVChatMessage *) message fromView:(id <JVChatViewController>) view;
 
 - (IBAction) editSettings:(id) sender;

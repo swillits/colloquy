@@ -19,8 +19,8 @@ typedef NS_ENUM(NSUInteger, JVChatViewOrganizationType) {
 NSString *JVToolbarToggleChatDrawerItemIdentifier = @"JVToolbarToggleChatDrawerItem";
 NSString *JVChatViewPboardType = @"Colloquy Chat View v1.0 pasteboard type";
 
-NSString * const JVChatViewControllerInfoDidChangeNotificationName = @"JVChatViewControllerInfoDidChangeNotificationName";
 
+NSString * JVChatWindowControllerChatViewsDidChangeNotificationName = @"JVChatWindowControllerChatViewsDidChangeNotificationName";
 
 
 #pragma mark -
@@ -315,8 +315,7 @@ NSString * const JVChatViewControllerInfoDidChangeNotificationName = @"JVChatVie
 
 - (IBAction)getInfo:(id)sender
 {
-	// Subclasses should implement to call showInspectorForObject:
-	[self doesNotRecognizeSelector:_cmd];
+	[self showInspectorForObject:self.objectToInspect];
 }
 
 
@@ -544,6 +543,7 @@ NSString * const JVChatViewControllerInfoDidChangeNotificationName = @"JVChatVie
 	}
 	[self didAddChatViewController:controller];
 	[self chatViewControllersDidChange];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatWindowControllerChatViewsDidChangeNotificationName object:self];
 	
 	
 	
@@ -588,6 +588,7 @@ NSString * const JVChatViewControllerInfoDidChangeNotificationName = @"JVChatVie
 	}
 	[self didRemoveChatViewController:controller];
 	[self chatViewControllersDidChange];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatWindowControllerChatViewsDidChangeNotificationName object:self];
 	
 	[self closeWindowIfEmptyAndVisible];
 }
@@ -620,6 +621,7 @@ NSString * const JVChatViewControllerInfoDidChangeNotificationName = @"JVChatVie
 	}
 	
 	[self chatViewControllersDidChange];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatWindowControllerChatViewsDidChangeNotificationName object:self];
 	
 	[self closeWindowIfEmptyAndVisible];
 }
@@ -666,6 +668,7 @@ NSString * const JVChatViewControllerInfoDidChangeNotificationName = @"JVChatVie
 	[self didRemoveChatViewController:oldController];
 	[self didAddChatViewController:controller];
 	[self chatViewControllersDidChange];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatWindowControllerChatViewsDidChangeNotificationName object:self];
 	
 	[self _saveWindowFrame];
 }

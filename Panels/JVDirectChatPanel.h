@@ -1,6 +1,7 @@
 #import "JVChatTranscriptPanel.h"
 #import "KAIgnoreRule.h"
 #import "JVChatMessage.h"
+#import "JVChatProtocols.h"
 
 #import <WebKit/WebKit.h>
 
@@ -21,13 +22,6 @@ extern NSString *JVToolbarMarkItemIdentifier;
 
 extern NSString *JVChatMessageWasProcessedNotification;
 extern NSString *JVChatEventMessageWasProcessedNotification;
-
-
-
-@protocol JVCanHaveNewMessages <NSObject>
-- (NSUInteger) newMessagesWaiting;
-- (NSUInteger) newHighlightMessagesWaiting;
-@end
 
 
 

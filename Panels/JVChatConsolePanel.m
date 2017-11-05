@@ -1,5 +1,6 @@
 #import "JVChatConsolePanel.h"
 #import "JVChatController.h"
+#import "JVChatProtocols.h"
 #import "MVTextView.h"
 #import "JVSplitView.h"
 #import "CQSendView.h"

@@ -3,6 +3,8 @@
 #import "MVConnectionsController.h"
 #import "KAIgnoreRule.h"
 #import "NSImageAdditions.h"
+#import "JVChatProtocols.h"
+
 
 @implementation MVChatConnection (MVChatConnectionInspection)
 - (id <JVInspector>) inspector {

@@ -42,7 +42,7 @@
 				commandRange = NSMakeRange(0, chunk.length);
 			}
 		
-			NSString * command = [chunk.string substringWithRange:NSMakeRange(1, commandRange.location - 1)];
+			NSString * command = [chunk.string substringWithRange:NSMakeRange(1, commandRange.length - 1)];
 			if (command.length > 0) {
 				NSAttributedString * args = nil;
 				if (chunk.length >= NSMaxRange(commandRange)) {

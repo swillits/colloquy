@@ -1,5 +1,7 @@
 #import "JVChatTabItem.h"
 #import "JVChatWindowController.h"
+#import "JVChatProtocols.h"
+
 
 @implementation JVChatTabItem
 - (id) initWithChatViewController:(id <JVChatViewController>) controller {

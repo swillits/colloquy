@@ -1,6 +1,9 @@
 #import "JVSidebarChatWindowController.h"
 #import "JVSideSplitView.h"
 #import "JVDetailCell.h"
+#import "JVChatProtocols.h"
+
+
 
 @implementation JVSidebarChatWindowController
 - (id) init {

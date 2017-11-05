@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="CQStreamlinedChatWindowController">
+            <connections>
+                <outlet property="containerView" destination="D3i-wx-LQy" id="45z-hE-8Z3"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="aJY-Yt-wvy"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Streamlined" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="564" height="287"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="564" height="287"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="D3i-wx-LQy">
+                        <rect key="frame" x="0.0" y="0.0" width="564" height="287"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </customView>
+                </subviews>
+            </view>
+            <toolbar key="toolbar" implicitIdentifier="57A10BB6-0A3C-4C93-BB42-5CB5D35550F6" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="sy2-3x-hdF">
+                <allowedToolbarItems>
+                    <toolbarItem implicitItemIdentifier="NSToolbarShowColorsItem" id="672-wf-PWT"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="Wni-fk-q54"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="Og0-6M-wZD"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="gvr-cc-NX2"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="d2G-Lz-Qqt"/>
+                    <toolbarItem implicitItemIdentifier="5601EEF6-6F7F-442D-830C-A9FD3529D154" explicitItemIdentifier="RoomSelector" label="Switch" paletteLabel="Switch" tag="-1" id="anh-iM-Uw0">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="40" height="32"/>
+                        <size key="maxSize" width="163" height="32"/>
+                        <customView key="view" id="Oze-qM-DSB" customClass="CQStreamlinedRoomSelectorView">
+                            <rect key="frame" x="0.0" y="14" width="163" height="32"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        </customView>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="8096674A-9853-4BB0-A115-C4EA208732D8" label="Action Menu" paletteLabel="Action Menu" tag="-1" image="NSActionTemplate" id="7kU-hG-byu"/>
+                    <toolbarItem implicitItemIdentifier="40992248-B627-49E2-B37E-074FE19A8BF5" label="Clear" paletteLabel="Clear" tag="-1" image="clear" id="a82-Ze-U8w"/>
+                    <toolbarItem implicitItemIdentifier="CEC3C86A-A02A-4D4C-95F0-E3BC1E1E1A63" label="Mark" paletteLabel="Mark" tag="-1" image="markDisplay" id="Doa-EK-Ou3"/>
+                </allowedToolbarItems>
+                <defaultToolbarItems>
+                    <toolbarItem reference="anh-iM-Uw0"/>
+                    <toolbarItem reference="d2G-Lz-Qqt"/>
+                    <toolbarItem reference="a82-Ze-U8w"/>
+                    <toolbarItem reference="Doa-EK-Ou3"/>
+                    <toolbarItem reference="7kU-hG-byu"/>
+                </defaultToolbarItems>
+            </toolbar>
+            <point key="canvasLocation" x="99" y="63"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="NSActionTemplate" width="14" height="14"/>
+        <image name="clear" width="32" height="32"/>
+        <image name="markDisplay" width="32" height="32"/>
+    </resources>
+</document>

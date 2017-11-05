@@ -104,8 +104,10 @@ NSString *const JVChatRoomPanelMembersDidChangeNotification = @"JVChatRoomPanelM
 
 - (void) setWindowController:(JVChatWindowController *) controller {
 	[super setWindowController:controller];
-	if( [[self preferenceForKey:@"expanded"] boolValue] )
-		[controller performSelector:@selector( expandListItem: ) withObject:self afterDelay:0.];
+
+// TODO-SW
+//	if( [[self preferenceForKey:@"expanded"] boolValue] )
+//		[controller performSelector:@selector( expandListItem: ) withObject:self afterDelay:0.];
 }
 
 - (void) willDispose {
@@ -301,7 +303,7 @@ NSString *const JVChatRoomPanelMembersDidChangeNotification = @"JVChatRoomPanelM
 	if (customImage) {
 		CGImageRef cgImage = [customImage CGImageForProposedRect:nil context:nil hints:nil];
 		NSBitmapImageRep * rep = [[NSBitmapImageRep alloc] initWithCGImage:cgImage];
-		rep.size = NSMakeSize(64, 6);
+		rep.size = NSMakeSize(64, 64);
 		NSData * pngData = [rep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
 		if (pngData) {
 			[self setPreference:pngData forKey:@"customIcon"];
@@ -309,6 +311,8 @@ NSString *const JVChatRoomPanelMembersDidChangeNotification = @"JVChatRoomPanelM
 	} else {
 		[self setPreference:nil forKey:@"customIcon"];
 	}
+	
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self];
 }
 
 

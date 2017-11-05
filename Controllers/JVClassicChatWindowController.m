@@ -232,6 +232,7 @@
 
 - (void)chatViewControllersDidChange
 {
+	[super chatViewControllersDidChange];
 	[self reloadList];
 }
 

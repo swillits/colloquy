@@ -293,6 +293,11 @@ static NSString *JVToolbarRuleSettingsItemIdentifier = @"JVToolbarRuleSettingsIt
 	return _newMessages;
 }
 
+- (NSUInteger) newHighlightMessagesWaiting {
+	return 0;
+}
+
+
 - (void) matchMessage:(JVChatMessage *) message fromView:(id <JVChatViewController>) view {
 	BOOL andOperation = ( _operation == 2 );
 	BOOL ignore = _ignoreCase;
