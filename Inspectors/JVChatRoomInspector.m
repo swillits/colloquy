@@ -2,6 +2,7 @@
 #import "JVChatRoomMember.h"
 #import "JVDirectChatPanel.h"
 #import "JVChatTranscriptPanel.h"
+#import "CQEmoticonMenu.h"
 
 #pragma mark -
 
@@ -13,6 +14,9 @@
 @end
 
 #pragma mark -
+
+@interface JVChatRoomInspector () <CQEmoticonMenuDelegate>
+@end
 
 @implementation JVChatRoomPanel (JVChatRoomInspection)
 - (id <JVInspector>) inspector {
@@ -82,12 +86,32 @@
 
 	[encodingSelection setMenu:[_room _encodingMenu]];
 	[styleSelection setMenu:[_room _stylesMenu]];
-	[emoticonSelection setMenu:[_room _emoticonsMenu]];
-
+	[emoticonSelection setMenu:[[CQEmoticonMenu alloc] init]];
+	emoticonSelection.menu.delegate = self;
+	[emoticonSelection.menu update];
+	[emoticonSelection synchronizeTitleAndSelectedItem];
+	
 	[self _reloadTopic];
 	[self _roomModeChanged:nil];
 	[self refreshBanList:nil];
 }
+
+
+- (JVEmoticonSet *)selectedEmoticonsSetInMenu:(CQEmoticonMenu *)menu isOverride:(BOOL *)isOverride
+{
+	if (isOverride) {
+		*isOverride = _room._usingSpecificEmoticons;
+	}
+	return _room.emoticons;
+}
+
+
+- (BOOL)shouldEnumerateEmoticonsInMenu:(CQEmoticonMenu *)menu
+{
+	return NO;
+}
+
+
 
 - (BOOL) shouldUnload {
 	[[view window] makeFirstResponder:view];

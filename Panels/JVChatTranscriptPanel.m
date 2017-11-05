@@ -627,11 +627,9 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 		[item setSubmenu:_styleMenu];
 		[ret addObject:item];
 
-		/*
 		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Emoticons", "choose emoticons contextual menu" ) action:NULL keyEquivalent:@""];
-		NSMenu *menu = [_emoticonsMenu copy];
+		NSMenu *menu = [self._emoticonsMenu copy];
 		[item setSubmenu:menu];
-		 */
 		[ret addObject:item];
 	}
 

@@ -80,8 +80,21 @@
 - (void)viewWillAppear
 {
 	[super viewWillAppear];
-	self.emoticonButton.menu = [self.delegate sendViewEmoticonMenu:self];
-	self.emoticonButton.hidden = (self.emoticonButton.menu == nil);
+	
+	if ([self.delegate respondsToSelector:@selector(sendViewEmoticonMenu:)]) {
+		self.emoticonButton.menu = [self.delegate sendViewEmoticonMenu:self];
+		self.emoticonButton.hidden = (self.emoticonButton.menu == nil);
+	} else {
+		self.emoticonButton.hidden = YES;
+	}
+	
+	if (self.emoticonButton.hidden) {
+		_sendTextView.enclosingScrollView.frame = self.view.bounds;
+	} else {
+		NSRect frame = self.view.bounds;
+		frame.size.width = NSMinX(self.emoticonButton.frame) - 5.0;
+		_sendTextView.enclosingScrollView.frame = frame;
+	}
 }
 
 

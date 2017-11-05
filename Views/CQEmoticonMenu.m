@@ -11,6 +11,10 @@
 
 
 @implementation CQEmoticonMenu
+{
+	JVEmoticonSet * _previouslySelectedSet;
+}
+
 
 - (instancetype)initWithTitle:(NSString *)title
 {
@@ -18,7 +22,7 @@
 		return nil;
 	}
 	
-	[[NSNotificationCenter chatCenter] addObserver:self selector:@selector(rebuild) name:JVEmoticonSetsScannedNotification object:nil];
+	[[NSNotificationCenter chatCenter] addObserver:self selector:@selector(forceRebuild) name:JVEmoticonSetsScannedNotification object:nil];
 	
 	return self;
 }
@@ -30,19 +34,32 @@
 - (void)update
 {
 	[self rebuild];
+	[super update];
 }
 
 
 
+- (void)forceRebuild
+{
+	[self removeAllItems];
+}
+
 
 - (void)rebuild
 {
-	[self removeAllItems];
-	
-	
 	BOOL setIsOverride = NO;
 	JVEmoticonSet * selectedSet = [self.delegate selectedEmoticonsSetInMenu:self isOverride:&setIsOverride];
 	BOOL enumerateSet = [self.delegate shouldEnumerateEmoticonsInMenu:self];
+	
+	if ((self.itemArray.count != 0) || (selectedSet == _previouslySelectedSet)) {
+		return;
+	}
+	
+	_previouslySelectedSet = selectedSet;
+	
+	
+	
+	[self removeAllItems];
 	
 	if (selectedSet && enumerateSet) {
 		for (NSMenuItem * item in selectedSet.emoticonMenuItems) {
