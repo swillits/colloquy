@@ -7,6 +7,7 @@
 #pragma mark -
 
 @interface JVChatRoomInspector (JVChatRoomInspectorPrivate)
+- (void) _reloadCustomIcon;
 - (void) _topicChanged:(NSNotification *) notification;
 - (void) _reloadTopic;
 - (void) _refreshEditStatus:(NSNotification *) notification;
@@ -27,6 +28,7 @@
 #pragma mark -
 
 @implementation JVChatRoomInspector
+
 - (id) initWithRoom:(JVChatRoomPanel *) room {
 	if( ( self = [self init] ) )
 		_room = room;
@@ -86,11 +88,13 @@
 
 	[encodingSelection setMenu:[_room _encodingMenu]];
 	[styleSelection setMenu:[_room _stylesMenu]];
+	
 	[emoticonSelection setMenu:[[CQEmoticonMenu alloc] init]];
 	emoticonSelection.menu.delegate = self;
 	[emoticonSelection.menu update];
 	[emoticonSelection synchronizeTitleAndSelectedItem];
 	
+	[self _reloadCustomIcon];
 	[self _reloadTopic];
 	[self _roomModeChanged:nil];
 	[self refreshBanList:nil];
@@ -248,6 +252,39 @@
 	[banRules editColumn:0 row:row withEvent:nil select:YES];
 }
 
+
+
+#pragma mark -
+
+- (IBAction)chooseImage:(id)sender
+{
+	NSOpenPanel * panel = [NSOpenPanel openPanel];
+	panel.allowedFileTypes = @[(id)kUTTypeImage];
+	
+	if ([panel runModal] == NSModalResponseOK) {
+		NSImage * image = [[NSImage alloc] initWithContentsOfURL:panel.URL];
+		if (image) {
+			_room.customIcon = image; 
+			[self _reloadCustomIcon];
+		}
+	}
+}
+
+
+
+- (IBAction)revertImage:(id)sender
+{
+	_room.customIcon = nil; 
+	[self _reloadCustomIcon];
+}
+
+
+
+
+
+
+
+
 #pragma mark -
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *) tableView {
@@ -312,6 +349,15 @@
 #pragma mark -
 
 @implementation JVChatRoomInspector (JVChatRoomInspectorPrivate)
+
+- (void)_reloadCustomIcon
+{
+	revertImageButton.enabled = (_room.customIcon != nil);
+	customRoomImageView.image = _room.customIcon ?: [NSImage imageNamed:@"room"];
+	roomImageView.image = _room.customIcon ?: [NSImage imageNamed:@"room"];
+}
+
+
 - (void) _topicChanged:(NSNotification *) notification {
 	if( [[topic window] firstResponder] == topic && [topic isEditable] ) return;
 	[self _reloadTopic];

@@ -14,6 +14,7 @@ COLLOQUY_EXPORT
 	BOOL _banListSynced;
 	NSUInteger _joinCount;
 	NSRegularExpression *_membersRegex;
+	NSImage * _customIcon;
 }
 - (void) joined;
 - (void) parting;
@@ -30,6 +31,9 @@ COLLOQUY_EXPORT
 - (void) resortMembers;
 
 - (void) handleRoomMessageNotification:(NSNotification *) notification;
+
+@property (readwrite, copy) NSImage * customIcon;
+
 @end
 
 @interface NSObject (MVChatPluginRoomSupport)

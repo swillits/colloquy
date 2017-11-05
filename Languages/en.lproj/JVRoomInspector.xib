@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13196" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13196"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="JVChatRoomInspector">
             <connections>
                 <outlet property="banRules" destination="335" id="399"/>
+                <outlet property="customRoomImageView" destination="30C-TF-ZBa" id="ZnG-Ev-bSa"/>
                 <outlet property="deleteBanButton" destination="340" id="419"/>
                 <outlet property="editBanButton" destination="339" id="420"/>
                 <outlet property="emoticonSelection" destination="331" id="346"/>
@@ -25,6 +26,8 @@
                 <outlet property="privateRoom" destination="355" id="366"/>
                 <outlet property="requiresPassword" destination="361" id="370"/>
                 <outlet property="resetTopic" destination="390" id="393"/>
+                <outlet property="revertImageButton" destination="WlO-mE-8f4" id="imt-zx-ddD"/>
+                <outlet property="roomImageView" destination="377" id="UCf-EU-UpR"/>
                 <outlet property="saveTopic" destination="389" id="392"/>
                 <outlet property="secretRoom" destination="352" id="367"/>
                 <outlet property="styleSelection" destination="328" id="348"/>
@@ -259,7 +262,7 @@ DQ
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="WZp-Cq-9Z4">
                                             <rect key="frame" x="1" y="1" width="283" height="206"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" autosaveColumns="NO" id="335">
                                                     <rect key="frame" x="0.0" y="0.0" width="286" height="206"/>
@@ -390,7 +393,7 @@ DQ
                         <tabViewItem label="Preferences" identifier="preferences" id="320">
                             <view key="view" id="321">
                                 <rect key="frame" x="10" y="25" width="315" height="264"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <textField verticalHuggingPriority="750" id="322">
                                         <rect key="frame" x="31" y="183" width="63" height="14"/>
@@ -458,6 +461,42 @@ DQ
                                             </menu>
                                         </popUpButtonCell>
                                     </popUpButton>
+                                    <textField verticalHuggingPriority="750" misplaced="YES" id="Mea-eU-YUB">
+                                        <rect key="frame" x="54" y="159" width="40" height="14"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Image:" id="mCj-dH-XNt">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <imageView misplaced="YES" id="30C-TF-ZBa">
+                                        <rect key="frame" x="98" y="128" width="48" height="48"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="room" id="y2d-jK-NUu"/>
+                                    </imageView>
+                                    <button verticalHuggingPriority="750" misplaced="YES" id="nEN-0x-lO6">
+                                        <rect key="frame" x="150" y="153" width="70" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Choose…" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="f38-Qq-Wg6">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="miniSystem"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="chooseImage:" target="-2" id="kvv-0L-jim"/>
+                                        </connections>
+                                    </button>
+                                    <button verticalHuggingPriority="750" misplaced="YES" id="WlO-mE-8f4">
+                                        <rect key="frame" x="150" y="134" width="70" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Default" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zpK-4g-tvn">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="miniSystem"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="revertImage:" target="-2" id="aXp-aq-JBJ"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </view>
                         </tabViewItem>

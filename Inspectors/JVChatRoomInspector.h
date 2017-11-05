@@ -6,8 +6,10 @@
 - (id <JVInspector>) inspector;
 @end
 
-@interface JVChatRoomInspector : NSObject <JVInspector> {
+@interface JVChatRoomInspector : NSObject <JVInspector>
+{
 	IBOutlet NSView *view;
+	IBOutlet NSImageView * roomImageView;
 	IBOutlet NSTextField *nameField;
 	IBOutlet NSTextField *infoField;
 	IBOutlet NSPopUpButton *encodingSelection;
@@ -30,10 +32,15 @@
 	IBOutlet NSButton *newBanButton;
 	IBOutlet NSButton *deleteBanButton;
 	IBOutlet NSButton *editBanButton;
+	
+	IBOutlet NSButton * revertImageButton;
+	IBOutlet NSImageView * customRoomImageView;
+	
 	JVChatRoomPanel *_room;
 	NSMutableArray *_latestBanList;
 	BOOL _nibLoaded;
 }
+
 - (id) initWithRoom:(JVChatRoomPanel *) room;
 
 - (IBAction) changeChatOption:(id) sender;
