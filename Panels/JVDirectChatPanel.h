@@ -104,8 +104,6 @@ COLLOQUY_EXPORT
 - (void) _didDisconnect:(NSNotification *) notification;
 - (void) _errorOccurred:(NSNotification *) notification;
 - (void) _awayStatusChanged:(NSNotification *) notification;
-// TODO: This method is overwriting a method of superclass category JVChatTranscriptPanel+Private, undefined behavior.
-- (void) _updateEmoticonsMenu; // overwrite
 - (void) _insertEmoticon:(id) sender;
 // TODO: This method is overwriting a method of superclass category JVChatTranscriptPanel+Private, undefined behavior.
 - (BOOL) _usingSpecificStyle; // overwrite

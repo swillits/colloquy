@@ -45,7 +45,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
-                <button verticalHuggingPriority="750" id="cxt-5a-fuk">
+                <button verticalHuggingPriority="750" id="cxt-5a-fuk" customClass="CQInlineEmoticonButton">
                     <rect key="frame" x="376" y="4" width="16" height="16"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <buttonCell key="cell" type="square" title="Textured Rounded" bezelStyle="shadowlessSquare" image="emoticonGlyph" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="7z6-Xb-Ar2">

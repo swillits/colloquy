@@ -77,6 +77,14 @@
 }
 
 
+- (void)viewWillAppear
+{
+	[super viewWillAppear];
+	self.emoticonButton.menu = [self.delegate sendViewEmoticonMenu:self];
+	self.emoticonButton.hidden = (self.emoticonButton.menu == nil);
+}
+
+
 
 #pragma mark -
 #pragma mark Properties

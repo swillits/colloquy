@@ -10,6 +10,15 @@
 
 @implementation CQInlineEmoticonButton
 
-
+- (void)mouseDown:(NSEvent *)event
+{
+	if (!self.isEnabled || !self.menu) {
+		return;
+	}
+	
+	[self highlight:YES];
+	[NSMenu popUpContextMenu:self.menu withEvent:event forView:self];
+	[self highlight:NO];
+}
 
 @end

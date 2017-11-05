@@ -242,6 +242,7 @@
 		5D3B84F61FAE41B000B1D70C /* CQSendStringCommandParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */; };
 		5D3B84F91FAE639F00B1D70C /* CQSendCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */; };
 		5DBEFD1D1FAE6D2C001D5759 /* CQSendView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */; };
+		5DF1F6661FAE97E9003F66B1 /* CQEmoticonMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */; };
 		891E8467123F0AEF00EC3C0F /* NSCharacterSetAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */; };
 		891EF3D1106426CB00CCEA35 /* PFMoveApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */; };
 		89EB91AA0F269BEF0028B3E3 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89EB91A90F269BEF0028B3E3 /* Sparkle.framework */; };
@@ -755,6 +756,8 @@
 		5D3B84F71FAE639F00B1D70C /* CQSendCompletion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendCompletion.h; path = Models/CQSendCompletion.h; sourceTree = "<group>"; };
 		5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendCompletion.m; path = Models/CQSendCompletion.m; sourceTree = "<group>"; };
 		5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CQSendView.xib; path = Resources/CQSendView.xib; sourceTree = "<group>"; };
+		5DF1F6641FAE97E9003F66B1 /* CQEmoticonMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQEmoticonMenu.h; path = Views/CQEmoticonMenu.h; sourceTree = "<group>"; };
+		5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQEmoticonMenu.m; path = Views/CQEmoticonMenu.m; sourceTree = "<group>"; };
 		891E8465123F0AEF00EC3C0F /* NSCharacterSetAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSCharacterSetAdditions.h; path = Additions/NSCharacterSetAdditions.h; sourceTree = "<group>"; };
 		891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSCharacterSetAdditions.m; path = Additions/NSCharacterSetAdditions.m; sourceTree = "<group>"; };
 		891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplicationController.m; path = Controllers/PFMoveApplicationController.m; sourceTree = "<group>"; };
@@ -1389,6 +1392,8 @@
 				5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */,
 				5D3B84EB1FAE375100B1D70C /* CQInlineEmoticonButton.h */,
 				5D3B84EC1FAE375100B1D70C /* CQInlineEmoticonButton.m */,
+				5DF1F6641FAE97E9003F66B1 /* CQEmoticonMenu.h */,
+				5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2281,6 +2286,7 @@
 				1CABFD0F0658629200801C15 /* JVStyle.m in Sources */,
 				1C0730CA0677765B008D8AD9 /* AICustomTabCell.m in Sources */,
 				1C0730CC0677765B008D8AD9 /* AICustomTabDragging.m in Sources */,
+				5DF1F6661FAE97E9003F66B1 /* CQEmoticonMenu.m in Sources */,
 				1C0730CE0677765B008D8AD9 /* AICustomTabDragWindow.m in Sources */,
 				1C0730D00677765B008D8AD9 /* AICustomTabsView.m in Sources */,
 				5D3B84ED1FAE375100B1D70C /* CQInlineEmoticonButton.m in Sources */,

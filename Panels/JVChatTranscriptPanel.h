@@ -8,6 +8,7 @@
 @class JVEmoticonSet;
 @class JVChatMessage;
 @class JVChatTranscript;
+@class CQEmoticonMenu;
 
 extern NSString *JVToolbarChooseStyleItemIdentifier;
 extern NSString *JVToolbarEmoticonsItemIdentifier;
@@ -26,7 +27,7 @@ extern NSString *JVToolbarQuickSearchItemIdentifier;
 	JVChatTranscript *_transcript;
 
 	NSMenu *_styleMenu;
-	NSMenu *_emoticonMenu;
+	CQEmoticonMenu *_emoticonsMenu;
 
 	NSString *_searchQuery;
 	NSRegularExpression *_searchQueryRegex;
@@ -82,8 +83,6 @@ extern NSString *JVToolbarQuickSearchItemIdentifier;
 
 // Emoticons Support.
 - (NSMenu *) _emoticonsMenu;
-- (void) _changeEmoticonsMenuSelection;
-- (void) _updateEmoticonsMenu;
 - (BOOL) _usingSpecificEmoticons;
 
 - (void) _openAppearancePreferences:(id) sender;

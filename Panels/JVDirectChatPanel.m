@@ -31,6 +31,8 @@
 #import "CQSendView.h"
 #import "CQSendHistory.h"
 #import "CQSendCompletion.h"
+#import "CQEmoticonMenu.h"
+
 
 static NSSet *actionVerbs = nil;
 
@@ -618,6 +620,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	[super changeStyleVariant:sender];
 }
 
+
 - (IBAction) changeEmoticons:(id) sender {
 	JVEmoticonSet *emoticon = [sender representedObject];
 
@@ -625,6 +628,13 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 	[super changeEmoticons:sender];
 }
+
+
+- (BOOL)shouldEnumerateEmoticonsInMenu:(CQEmoticonMenu *)menu
+{
+	return YES;
+}
+
 
 #pragma mark -
 #pragma mark Encoding Support
@@ -1009,6 +1019,12 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 - (void)sendView:(CQSendViewController *)sendView navigationKeyPressed:(NSEvent *)event
 {
 	[[[[display mainFrame] findFrameNamed:@"content"] frameView] keyDown:event];
+}
+
+
+- (NSMenu * _Nullable)sendViewEmoticonMenu:(CQSendViewController *)sendView
+{
+	return self._emoticonsMenu;
 }
 
 
@@ -1417,85 +1433,6 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	}
 }
 
-- (void) _updateEmoticonsMenu {
-	NSEnumerator *enumerator = nil;
-	NSMenu *menu = nil, *subMenu = nil;
-	NSMenuItem *menuItem = nil;
-	BOOL new = YES;
-
-	if( ! ( menu = _emoticonMenu ) ) {
-		menu = [[NSMenu alloc] initWithTitle:@""];
-		_emoticonMenu = menu;
-	} else {
-		new = NO;
-		enumerator = [[[menu itemArray] copy] objectEnumerator];
-		if( ! [menu indexOfItemWithTitle:NSLocalizedString( @"Emoticons", "choose emoticons toolbar item label" )] )
-			[enumerator nextObject];
-		while( ( menuItem = [enumerator nextObject] ) )
-			if( ! [menuItem tag] && ! [menuItem isSeparatorItem] )
-				[menu removeItem:menuItem];
-	}
-
-	NSUInteger count = 0;
-	if( ! [menu indexOfItemWithTitle:NSLocalizedString( @"Emoticons", "choose emoticons toolbar item label" )] )
-		count++;
-
-	NSArray *menuItems = [[self emoticons] emoticonMenuItems];
-	for( menuItem in menuItems ) {
-		[menuItem setAction:@selector( _insertEmoticon: )];
-		[menuItem setTarget:self];
-		[menu insertItem:menuItem atIndex:count++];
-	}
-
-	if( ! [menuItems count] ) {
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"No Selectable Emoticons", "no selectable emoticons menu item title" ) action:NULL keyEquivalent:@""];
-		[menuItem setEnabled:NO];
-		[menu insertItem:menuItem atIndex:count];
-	}
-
-	if( new ) {
-		JVEmoticonSet *emoticon = nil;
-
-		[menu addItem:[NSMenuItem separatorItem]];
-
-		subMenu = [[NSMenu alloc] initWithTitle:@""];
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Preferences", "preferences menu item title" ) action:NULL keyEquivalent:@""];
-		[menuItem setSubmenu:subMenu];
-		[menuItem setTag:20];
-		[menu addItem:menuItem];
-
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Style Default", "default style emoticons menu item title" ) action:@selector( changeEmoticons: ) keyEquivalent:@""];
-		[menuItem setTarget:self];
-		[subMenu addItem:menuItem];
-
-		[subMenu addItem:[NSMenuItem separatorItem]];
-
-		menuItem = [[NSMenuItem alloc] initWithTitle:[[JVEmoticonSet textOnlyEmoticonSet] displayName] action:@selector( changeEmoticons: ) keyEquivalent:@""];
-		[menuItem setTarget:self];
-		[menuItem setRepresentedObject:[JVEmoticonSet textOnlyEmoticonSet]];
-		[subMenu addItem:menuItem];
-
-		[subMenu addItem:[NSMenuItem separatorItem]];
-
-		enumerator = [[[[JVEmoticonSet emoticonSets] allObjects] sortedArrayUsingSelector:@selector( compare: )] objectEnumerator];
-		while( ( emoticon = [enumerator nextObject] ) ) {
-			if( ! [[emoticon displayName] length] ) continue;
-			menuItem = [[NSMenuItem alloc] initWithTitle:[emoticon displayName] action:@selector( changeEmoticons: ) keyEquivalent:@""];
-			[menuItem setTarget:self];
-			[menuItem setRepresentedObject:emoticon];
-			[subMenu addItem:menuItem];
-		}
-
-		[subMenu addItem:[NSMenuItem separatorItem]];
-
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Appearance Preferences...", "appearance preferences menu item title" ) action:@selector( _openAppearancePreferences: ) keyEquivalent:@""];
-		[menuItem setTarget:self];
-		[menuItem setTag:10];
-		[subMenu addItem:menuItem];
-	}
-
-	[self _changeEmoticonsMenuSelection];
-}
 
 - (void) _insertEmoticon:(id) sender {
 	[sendViewController insertEmoticon:(NSString *)[sender representedObject]];

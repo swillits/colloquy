@@ -64,6 +64,10 @@ typedef NS_OPTIONS(NSUInteger, CQSendViewOptions) {
 
 //! Page Up, Page Down, Home, Begin, End was pressed.
 - (void)sendView:(CQSendViewController *)sendView navigationKeyPressed:(NSEvent *)event;
+
+
+- (NSMenu * _Nullable)sendViewEmoticonMenu:(CQSendViewController *)sendView;
+
 @end
 
 
