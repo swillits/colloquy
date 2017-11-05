@@ -9,6 +9,8 @@
 @class MVChatUserWatchRule;
 @class JVMutableChatMessage;
 @class JVBuddy;
+@class CQSendViewController;
+@class JVSplitView;
 
 extern NSString *JVToolbarTextEncodingItemIdentifier;
 extern NSString *JVToolbarClearScrollbackItemIdentifier;
@@ -21,12 +23,13 @@ extern NSString *JVChatEventMessageWasProcessedNotification;
 COLLOQUY_EXPORT
 @interface JVDirectChatPanel : JVChatTranscriptPanel <WebUIDelegate, WebPolicyDelegate> {
 	@protected
-	IBOutlet MVTextView *send;
+	IBOutlet JVSplitView * sendDisplaySplitView;
+	IBOutlet NSView * sendViewPlaceholder;
+	CQSendViewController * sendViewController;
 
 	id _target;
 	NSStringEncoding _encoding;
 	NSMenu *_encodingMenu;
-	NSMutableArray *_sendHistory;
 	NSMutableArray<NSDictionary <NSString *, id>*> *_waitingAlerts;
 	NSMutableDictionary *_settings;
 	NSMenu *_spillEncodingMenu;
@@ -78,13 +81,11 @@ COLLOQUY_EXPORT
 
 - (IBAction) send:(id) sender;
 - (void) sendMessage:(JVMutableChatMessage *) message;
-- (BOOL) processUserCommand:(NSString *) command withArguments:(NSAttributedString *) arguments;
 
 - (IBAction) clear:(id) sender;
 - (IBAction) clearDisplay:(id) sender;
 - (IBAction) markDisplay:(id) sender;
 
-- (void) textDidChange:(NSNotification *) notification;
 @end
 
 @interface NSObject (MVChatPluginDirectChatSupport)
@@ -103,8 +104,6 @@ COLLOQUY_EXPORT
 - (void) _didDisconnect:(NSNotification *) notification;
 - (void) _errorOccurred:(NSNotification *) notification;
 - (void) _awayStatusChanged:(NSNotification *) notification;
-// TODO: This method is overwriting a method of superclass category JVChatTranscriptPanel+Private, undefined behavior.
-- (void) _updateEmoticonsMenu; // overwrite
 - (void) _insertEmoticon:(id) sender;
 // TODO: This method is overwriting a method of superclass category JVChatTranscriptPanel+Private, undefined behavior.
 - (BOOL) _usingSpecificStyle; // overwrite

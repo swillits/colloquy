@@ -3,24 +3,7 @@
 @class MVTextView;
 @class MVChatConnection;
 
-@interface JVChatConsolePanel : NSObject <JVChatViewController, JVChatViewControllerScripting, NSLayoutManagerDelegate> {
-	@protected
-	IBOutlet NSView *contents;
-	IBOutlet NSTextView *display;
-	IBOutlet MVTextView *send;
-	BOOL _nibLoaded;
-	BOOL _verbose;
-	BOOL _ignorePRIVMSG;
-	BOOL _paused;
-	CGFloat _sendHeight;
-	BOOL _scrollerIsAtBottom;
-	BOOL _forceSplitViewPosition;
-	NSInteger _historyIndex;
-	NSUInteger _lastDisplayTextLength;
-	NSMutableArray *_sendHistory;
-	JVChatWindowController *_windowController;
-	MVChatConnection *_connection;
-}
+@interface JVChatConsolePanel : NSObject <JVChatViewController, JVChatViewControllerScripting, NSLayoutManagerDelegate> 
 - (id) initWithConnection:(MVChatConnection *) connection;
 
 - (void) pause;

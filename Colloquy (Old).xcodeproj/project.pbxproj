@@ -237,6 +237,13 @@
 		5D3B84C91FAE28BD00B1D70C /* sidebarFavoritesTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D3B84C71FAE28BC00B1D70C /* sidebarFavoritesTemplate.png */; };
 		5D3B84CA1FAE28BD00B1D70C /* sidebarFavoritesTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D3B84C81FAE28BD00B1D70C /* sidebarFavoritesTemplate@2x.png */; };
 		5D3B84D01FAE2CDE00B1D70C /* JVSideStatusButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84CF1FAE2CDD00B1D70C /* JVSideStatusButton.m */; };
+		5D3B84ED1FAE375100B1D70C /* CQInlineEmoticonButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84EC1FAE375100B1D70C /* CQInlineEmoticonButton.m */; };
+		5D3B84F01FAE3B5800B1D70C /* CQSendView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */; };
+		5D3B84F31FAE3E3400B1D70C /* CQSendHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */; };
+		5D3B84F61FAE41B000B1D70C /* CQSendStringCommandParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */; };
+		5D3B84F91FAE639F00B1D70C /* CQSendCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */; };
+		5DBEFD1D1FAE6D2C001D5759 /* CQSendView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */; };
+		5DF1F6661FAE97E9003F66B1 /* CQEmoticonMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */; };
 		891E8467123F0AEF00EC3C0F /* NSCharacterSetAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */; };
 		891EF3D1106426CB00CCEA35 /* PFMoveApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */; };
 		89EB91AA0F269BEF0028B3E3 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89EB91A90F269BEF0028B3E3 /* Sparkle.framework */; };
@@ -741,6 +748,19 @@
 		5D3B84C81FAE28BD00B1D70C /* sidebarFavoritesTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sidebarFavoritesTemplate@2x.png"; path = "../../../Desktop/sidebarFavoritesTemplate@2x.png"; sourceTree = "<group>"; };
 		5D3B84CE1FAE2CDD00B1D70C /* JVSideStatusButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JVSideStatusButton.h; path = Views/JVSideStatusButton.h; sourceTree = "<group>"; };
 		5D3B84CF1FAE2CDD00B1D70C /* JVSideStatusButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JVSideStatusButton.m; path = Views/JVSideStatusButton.m; sourceTree = "<group>"; };
+		5D3B84EB1FAE375100B1D70C /* CQInlineEmoticonButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQInlineEmoticonButton.h; path = Views/CQInlineEmoticonButton.h; sourceTree = "<group>"; };
+		5D3B84EC1FAE375100B1D70C /* CQInlineEmoticonButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQInlineEmoticonButton.m; path = Views/CQInlineEmoticonButton.m; sourceTree = "<group>"; };
+		5D3B84EE1FAE3B5800B1D70C /* CQSendView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendView.h; path = Views/CQSendView.h; sourceTree = "<group>"; };
+		5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendView.m; path = Views/CQSendView.m; sourceTree = "<group>"; };
+		5D3B84F11FAE3E3400B1D70C /* CQSendHistory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendHistory.h; path = Models/CQSendHistory.h; sourceTree = "<group>"; };
+		5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendHistory.m; path = Models/CQSendHistory.m; sourceTree = "<group>"; };
+		5D3B84F41FAE41B000B1D70C /* CQSendStringCommandParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendStringCommandParser.h; path = Models/CQSendStringCommandParser.h; sourceTree = "<group>"; };
+		5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendStringCommandParser.m; path = Models/CQSendStringCommandParser.m; sourceTree = "<group>"; };
+		5D3B84F71FAE639F00B1D70C /* CQSendCompletion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQSendCompletion.h; path = Models/CQSendCompletion.h; sourceTree = "<group>"; };
+		5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQSendCompletion.m; path = Models/CQSendCompletion.m; sourceTree = "<group>"; };
+		5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CQSendView.xib; path = Resources/CQSendView.xib; sourceTree = "<group>"; };
+		5DF1F6641FAE97E9003F66B1 /* CQEmoticonMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQEmoticonMenu.h; path = Views/CQEmoticonMenu.h; sourceTree = "<group>"; };
+		5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQEmoticonMenu.m; path = Views/CQEmoticonMenu.m; sourceTree = "<group>"; };
 		891E8465123F0AEF00EC3C0F /* NSCharacterSetAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSCharacterSetAdditions.h; path = Additions/NSCharacterSetAdditions.h; sourceTree = "<group>"; };
 		891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSCharacterSetAdditions.m; path = Additions/NSCharacterSetAdditions.m; sourceTree = "<group>"; };
 		891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplicationController.m; path = Controllers/PFMoveApplicationController.m; sourceTree = "<group>"; };
@@ -1366,6 +1386,19 @@
 				1C0730D106777678008D8AD9 /* ESFloater.h */,
 				1C415F250B350CA300239EB3 /* JVToolbarItem.m */,
 				1C415F240B350CA300239EB3 /* JVToolbarItem.h */,
+				5D3B84F71FAE639F00B1D70C /* CQSendCompletion.h */,
+				5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */,
+				5D3B84EE1FAE3B5800B1D70C /* CQSendView.h */,
+				5D3B84EF1FAE3B5800B1D70C /* CQSendView.m */,
+				5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */,
+				5D3B84F11FAE3E3400B1D70C /* CQSendHistory.h */,
+				5D3B84F21FAE3E3400B1D70C /* CQSendHistory.m */,
+				5D3B84F41FAE41B000B1D70C /* CQSendStringCommandParser.h */,
+				5D3B84F51FAE41B000B1D70C /* CQSendStringCommandParser.m */,
+				5D3B84EB1FAE375100B1D70C /* CQInlineEmoticonButton.h */,
+				5D3B84EC1FAE375100B1D70C /* CQInlineEmoticonButton.m */,
+				5DF1F6641FAE97E9003F66B1 /* CQEmoticonMenu.h */,
+				5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2032,6 +2065,7 @@
 				CB66DEA30631F8160034F76E /* Stickies.png in Resources */,
 				1CE95886063F3BF90071C9C3 /* inspector.png in Resources */,
 				1CA75A270652537A000141D5 /* styleOptions.plist in Resources */,
+				5DBEFD1D1FAE6D2C001D5759 /* CQSendView.xib in Resources */,
 				1C238F050677B5E5000E89A7 /* JVTabbedChatWindow.xib in Resources */,
 				1C2391BC0677E8F1000E89A7 /* aquaTabBackground.png in Resources */,
 				1C2391BD0677E8F1000E89A7 /* aquaTabClose.png in Resources */,
@@ -2224,8 +2258,10 @@
 				1CB2CD71052DDC560094AAA4 /* JVChatRoomMember.m in Sources */,
 				1CB2CD72052DDC560094AAA4 /* JVDirectChatPanel.m in Sources */,
 				5D3B84D01FAE2CDE00B1D70C /* JVSideStatusButton.m in Sources */,
+				5D3B84F01FAE3B5800B1D70C /* CQSendView.m in Sources */,
 				1CB2CD73052DDC560094AAA4 /* MVTableView.m in Sources */,
 				1CB2CD74052DDC560094AAA4 /* JVChatTranscriptPanel.m in Sources */,
+				5D3B84F91FAE639F00B1D70C /* CQSendCompletion.m in Sources */,
 				1CB2CD77052DDC560094AAA4 /* JVChatConsolePanel.m in Sources */,
 				1C1ACE440533943900F71D4E /* JVInspectorController.m in Sources */,
 				1C1ACFB805344FCC00F71D4E /* JVConnectionInspector.m in Sources */,
@@ -2256,10 +2292,14 @@
 				1CABFD0F0658629200801C15 /* JVStyle.m in Sources */,
 				1C0730CA0677765B008D8AD9 /* AICustomTabCell.m in Sources */,
 				1C0730CC0677765B008D8AD9 /* AICustomTabDragging.m in Sources */,
+				5DF1F6661FAE97E9003F66B1 /* CQEmoticonMenu.m in Sources */,
 				1C0730CE0677765B008D8AD9 /* AICustomTabDragWindow.m in Sources */,
 				1C0730D00677765B008D8AD9 /* AICustomTabsView.m in Sources */,
+				5D3B84ED1FAE375100B1D70C /* CQInlineEmoticonButton.m in Sources */,
+				5D3B84F61FAE41B000B1D70C /* CQSendStringCommandParser.m in Sources */,
 				1C0730D406777678008D8AD9 /* ESFloater.m in Sources */,
 				1C0730E50677A63B008D8AD9 /* NSImageAdditions.m in Sources */,
+				5D3B84F31FAE3E3400B1D70C /* CQSendHistory.m in Sources */,
 				1C2391AA0677E6B7000E89A7 /* JVChatTabItem.m in Sources */,
 				1C96E93F06AADBBD0013B0A9 /* JVTranscriptPreferencesViewController.m in Sources */,
 				1C6A112B06BC0C9E00A66340 /* NSAttributedStringMoreAdditions.m in Sources */,

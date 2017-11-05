@@ -9,7 +9,6 @@ COLLOQUY_EXPORT
 @interface JVChatRoomPanel : JVDirectChatPanel {
 	@protected
 	NSMutableArray<JVChatRoomMember *> *_sortedMembers;
-	NSMutableArray *_preferredTabCompleteNicknames;
 	NSMutableSet *_nextMessageAlertMembers;
 	BOOL _kickedFromRoom;
 	BOOL _banListSynced;

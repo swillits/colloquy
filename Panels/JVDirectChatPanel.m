@@ -28,6 +28,11 @@
 #import "NSBundleAdditions.h"
 #import "NSDateAdditions.h"
 #import <ChatCore/NSRegularExpressionAdditions.h>
+#import "CQSendView.h"
+#import "CQSendHistory.h"
+#import "CQSendCompletion.h"
+#import "CQEmoticonMenu.h"
+
 
 static NSSet *actionVerbs = nil;
 
@@ -100,7 +105,7 @@ NSString *JVToolbarMarkItemIdentifier = @"JVToolbarMarkItem";
 NSString *JVChatMessageWasProcessedNotification = @"JVChatMessageWasProcessedNotification";
 NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasProcessedNotification";
 
-@interface JVDirectChatPanel () <ABImageClient, MVTextViewDelegate>
+@interface JVDirectChatPanel () <ABImageClient, CQSendViewDelegate>
 @end
 
 #pragma mark -
@@ -108,7 +113,11 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 @implementation JVDirectChatPanel
 - (id) init {
 	if( ( self = [super init] ) ) {
-		send = nil;
+		
+		sendViewController = [[CQSendViewController alloc] init];
+		sendViewController.delegate = self;
+		sendViewController.completionHandler = [[CQChatSendCompletionHandler alloc] initWithChat:self];
+		
 		_target = nil;
 		_firstMessage = YES;
 		_newMessageCount = 0;
@@ -123,9 +132,6 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		_encoding = NSASCIIStringEncoding;
 		_encodingMenu = nil;
 		_spillEncodingMenu = nil;
-
-		_sendHistory = [NSMutableArray arrayWithCapacity:30];
-		[_sendHistory insertObject:[[NSAttributedString alloc] initWithString:@""] atIndex:0];
 
 		_waitingAlerts = [NSMutableArray array];
 	}
@@ -175,6 +181,9 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	NSString *variant = nil;
 	JVEmoticonSet *emoticon = nil;
 
+	[sendViewPlaceholder.superview replaceSubview:sendViewPlaceholder with:sendViewController.view];
+	sendViewPlaceholder = nil;
+	
 	if( [[self target] isKindOfClass:[MVDirectChatConnection class]] ) {
 		[[NSNotificationCenter chatCenter] addObserver:self selector:@selector( _refreshIcon: ) name:MVDirectChatConnectionDidConnectNotification object:[self target]];
 		[[NSNotificationCenter chatCenter] addObserver:self selector:@selector( _refreshIcon: ) name:MVDirectChatConnectionDidDisconnectNotification object:[self target]];
@@ -200,19 +209,9 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 	[self changeEncoding:nil];
 
-	[send setSelectable:YES];
-	[send setEditable:YES];
-	[send setRichText:YES];
-	[send setImportsGraphics:NO];
-	[send setUsesFontPanel:YES];
-	[send setUsesFindPanel:NO];
-	[send setAllowsUndo:YES];
-	[send setUsesRuler:NO];
-	[send setDelegate:self];
-	[send reset:nil];
-
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputAutoResizes"] )
-		[(JVSplitView *)[[[send superview] superview] superview] setDividerStyle:NSSplitViewDividerStylePaneSplitter];
+	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputAutoResizes"] ) {
+		[sendDisplaySplitView setDividerStyle:NSSplitViewDividerStylePaneSplitter];
+	}
 }
 
 - (void) dealloc {
@@ -223,7 +222,6 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	if( _watchRule ) [[self connection] removeChatUserWatchRule:_watchRule];
 
 	_target = nil;
-	_sendHistory = nil;
 	_settings = nil;
 	_encodingMenu = nil;
 	_spillEncodingMenu = nil;
@@ -266,7 +264,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 }
 
 - (NSResponder *) firstResponder {
-	return send;
+	return sendViewController.sendTextView;
 }
 
 #pragma mark -
@@ -438,8 +436,10 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 - (void) didSelect {
 	if( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputAutoResizes"] ) {
-		[(JVSplitView *)[[[send superview] superview] superview] setPositionUsingName:@"JVChatSplitViewPosition"];
-	} else [self textDidChange:nil];
+		[sendDisplaySplitView setPositionUsingName:@"JVChatSplitViewPosition"];
+	} else {
+		[sendViewController resizeToFit];
+	}
 
 	_newMessageCount = 0;
 	_newHighlightMessageCount = 0;
@@ -449,7 +449,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	[super didSelect];
 
 	[_windowController reloadListItem:self andChildren:NO];
-	[[[self view] window] makeFirstResponder:send];
+	[[[self view] window] makeFirstResponder:self.firstResponder];
 
 	for (NSDictionary<NSString *, id> *alertDict in _waitingAlerts) {
 		NSString *alertKey = @"alert";
@@ -620,6 +620,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	[super changeStyleVariant:sender];
 }
 
+
 - (IBAction) changeEmoticons:(id) sender {
 	JVEmoticonSet *emoticon = [sender representedObject];
 
@@ -627,6 +628,13 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 	[super changeEmoticons:sender];
 }
+
+
+- (BOOL)shouldEnumerateEmoticonsInMenu:(CQEmoticonMenu *)menu
+{
+	return YES;
+}
+
 
 #pragma mark -
 #pragma mark Encoding Support
@@ -955,13 +963,9 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 #pragma mark -
 #pragma mark History manipulation
 
+// Should this exist? When does history need to be modified by anything but the send view controller itself?
 - (void) addMessageToHistory:(NSAttributedString *) message {
-	if( ! [message length] ) return;
-	if( [_sendHistory count] )
-		[_sendHistory replaceObjectAtIndex:0 withObject:[[NSAttributedString alloc] initWithString:@""]];
-	[_sendHistory insertObject:[message copy] atIndex:1];
-	if( [_sendHistory count] > [[[NSUserDefaults standardUserDefaults] objectForKey:@"JVChatMaximumHistory"] unsignedIntValue] )
-		[_sendHistory removeObjectAtIndex:[_sendHistory count] - 1];	
+	[sendViewController.history addToHistory:message];
 }
 
 #pragma mark -
@@ -986,16 +990,60 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	else [self setPreference:[NSNumber numberWithBool:YES] forKey:@"muted"];
 }
 
+
+#pragma mark -
+#pragma mark Send View Support
+
+- (void)sendViewRequestedSend:(CQSendViewController *)sendVC options:(CQSendViewOptions)options
+{
+	[self send_asAction:((options & CQSendViewSendAsAction) != 0)];
+}
+
+
+- (void)sendViewWillResize:(CQSendViewController *)sendVC
+{
+	// Before the resize happens, take note of whether the chat transcript is "at the bottom",
+	// and then in didResize, ensure it scrolls to the bottom if it should.
+	_scrollerIsAtBottom = [display scrolledNearBottom];
+}
+
+
+- (void)sendViewDidResize:(CQSendViewController *)sendVC
+{
+	if (_scrollerIsAtBottom) {
+		[display scrollToBottom];
+	}
+}
+
+
+- (void)sendView:(CQSendViewController *)sendView navigationKeyPressed:(NSEvent *)event
+{
+	[[[[display mainFrame] findFrameNamed:@"content"] frameView] keyDown:event];
+}
+
+
+- (NSMenu * _Nullable)sendViewEmoticonMenu:(CQSendViewController *)sendView
+{
+	return self._emoticonsMenu;
+}
+
+
+
+
 #pragma mark -
 #pragma mark Input Handling
 
-- (IBAction) send:(id) sender {
-	NSTextStorage *subMsg = nil;
-	__block BOOL action = NO;
-	NSRange range;
+- (IBAction) send:(id) sender
+{
+	[self send_asAction:NO];
+}
 
-	// allow commands to be passed to plugins if we arn't connected, allow commands to pass to plugins and server if we are just out of the room
-	if( ( _cantSendMessages || ! [self isEnabled] ) && ( ! [[[send textStorage] string] hasPrefix:@"/"] || [[[send textStorage] string] hasPrefix:@"//"] ) ) {
+
+- (void)send_asAction:(BOOL)asAction
+{
+	// Allow commands to be passed to plugins if we aren't connected
+	// Allow commands to pass to plugins and server if we are just out of the room
+	if ((_cantSendMessages || !self.isEnabled) && !sendViewController.stringToSendIsACommand) {
 		if( [[self target] isKindOfClass:[MVChatUser class]] && [[self user] status] == MVChatUserOfflineStatus ) {
 			NSAlert *alert = [[NSAlert alloc] init];
 			[alert setMessageText:[NSString stringWithFormat:NSLocalizedString( @"User \"%@\" is not online", "user not online alert dialog title" ), [[self user] displayName]]];
@@ -1005,105 +1053,35 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		}
 		return;
 	}
-
-	// ask if the user really wants to send a message with lots of newlines.
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"JVWarnOnLargeMessages"] ) {
-		NSUInteger newlineCount = 0;
-		NSUInteger messageLimit = 5;
-
-		NSArray *lines = [[[send textStorage] string] componentsSeparatedByString:@"\n"];
-
-		for( NSString *line in lines )
-			if( [line length] ) newlineCount++;
-
-		if ( [[[NSUserDefaults standardUserDefaults] objectForKey:@"JVWarnOnLargeMessageLimit"] unsignedIntValue] > 1 )
-			messageLimit = [[[NSUserDefaults standardUserDefaults] objectForKey:@"JVWarnOnLargeMessageLimit"] unsignedIntValue];
-
-		if ( newlineCount > messageLimit ) {
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:NSLocalizedString( @"Multiple lines detected", "multiple lines detected alert dialog title")];
-			[alert setInformativeText:[NSString stringWithFormat:NSLocalizedString( @"You are about to send a message with %d lines. Are you sure you want to do this?", "about to send a %d line message alert dialog message" ), newlineCount]];
-			[alert addButtonWithTitle:NSLocalizedString( @"Send", "Send alert dialog button title" )];
-			[alert addButtonWithTitle:NSLocalizedString( @"Cancel", "Cancel alert dialog button title" )];
-			[alert setAlertStyle:NSWarningAlertStyle];
-
-			if ( [alert runModal] == NSAlertSecondButtonReturn ) return;
-		}
-	}
-
-	_historyIndex = 0;
-	if( ! [[send string] length] ) return;
-	[self addMessageToHistory:[send textStorage]];
-
-	if( [sender isKindOfClass:[NSNumber class]] && [sender boolValue] ) action = YES;
-
-	[[[send textStorage] mutableString] replaceOccurrencesOfString:@"\r" withString:@"\n" options:NSLiteralSearch range:NSMakeRange( 0, [[send string] length] )];
-	NSTextStorage *storage = [[send textStorage] mutableCopy];
-
-	while( [[storage string] length] ) {
-		range = [[storage string] rangeOfString:@"\n"];
-		if( ! range.length ) range.location = [[storage string] length];
-		subMsg = [[storage attributedSubstringFromRange:NSMakeRange( 0, range.location )] mutableCopy];
-
-		if( ( [subMsg length] >= 1 && range.length ) || ( [subMsg length] && ! range.length ) ) {
-			if( [[subMsg string] hasPrefix:@"/"] && ! [[subMsg string] hasPrefix:@"//"] ) {
-				NSScanner *scanner = [NSScanner scannerWithString:[subMsg string]];
-				NSString *command = nil;
-				NSAttributedString *arguments = nil;
-
-				[scanner scanString:@"/" intoString:nil];
-				[scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:&command];
-				if( [[subMsg string] length] >= [scanner scanLocation] + 1 )
-					[scanner setScanLocation:[scanner scanLocation] + 1];
-
-				arguments = [subMsg attributedSubstringFromRange:NSMakeRange( [scanner scanLocation], range.location - [scanner scanLocation] )];
-
-				if( ![self processUserCommand:command withArguments:arguments] && [[self connection] isConnected] )
-					[[self connection] sendCommand:command withArguments:arguments];
-			} else {
-				if( [[subMsg string] hasPrefix:@"//"] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"JVSendDoubleSlashes"] ) [subMsg deleteCharactersInRange:NSMakeRange( 0, 1 )];
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatNaturalActions"] && ! action ) {
-					if( ! actionVerbs ) {
-						NSArray *verbs = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"verbs" ofType:@"plist"]];
-						actionVerbs = [[NSSet alloc] initWithArray:verbs];
-					}
-
-					NSScanner *scanner = [[NSScanner alloc] initWithString:[subMsg string]];
-					[scanner setCharactersToBeSkipped:nil];
-
-					NSString *word = nil;
-					[scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&word];
-
-					if ([actionVerbs containsObject:word])
-						action = YES;
-				}
-
-				if( [subMsg length] ) {
-					MVChatUser* localUser = ( [[self target] isKindOfClass:[MVChatRoom class]] ? [[self target] localMemberUser] : [[self connection] localUser] );
-					JVMutableChatMessage *cmessage = [[JVMutableChatMessage alloc] initWithText:subMsg sender:localUser];
-					[cmessage setAction:action];
-
-					[self sendMessage:cmessage];
-					if( ! [[[self connection] supportedFeatures] containsObject:MVChatConnectionEchoMessageFeature] )
-						[self echoSentMessageToDisplay:cmessage]; // echo after the plugins process the message, if the server won't echo it for us
-				}
-			}
-		}
-
-		if( range.length ) range.location++;
-		[storage deleteCharactersInRange:NSMakeRange( 0, range.location )];
-	}
-
-	NSDictionary *typingAttributes = [send typingAttributes];
-
-	[send reset:nil];
-
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputRetainsFormatting"] )
-		[send setTypingAttributes:typingAttributes];
-
-	[self textDidChange:nil];
+	
+	[sendViewController sendWithConnection:self.connection asAction:asAction inView:self];
 	[display scrollToBottom];
 }
+
+
+
+- (void)sendView:(CQSendViewController *)sendView sendCommand:(NSString *)command withArguments:(NSAttributedString *)arguments
+{
+	[[self target] sendCommand:command withArguments:arguments withEncoding:_encoding];
+}
+
+
+
+- (void)sendView:(CQSendViewController *)sendView sendMessage:(NSAttributedString *)message asAction:(BOOL)asAction
+{
+	MVChatUser* localUser = ( [[self target] isKindOfClass:[MVChatRoom class]] ? [[self target] localMemberUser] : [[self connection] localUser] );
+	JVMutableChatMessage * msg = [[JVMutableChatMessage alloc] initWithText:message sender:localUser];
+	msg.action = asAction;
+	
+	[self sendMessage:msg];
+	
+	// echo after the plugins process the message, if the server won't echo it for us
+	if (![self.connection.supportedFeatures containsObject:MVChatConnectionEchoMessageFeature]) {
+		[self echoSentMessageToDisplay:msg];
+	}
+}
+
+
 
 - (void) sendMessage:(JVMutableChatMessage *) message {
 	NSMethodSignature *signature = [NSMethodSignature methodSignatureWithReturnAndArgumentTypes:@encode( void ), @encode( JVMutableChatMessage * ), @encode( id ), nil];
@@ -1121,27 +1099,11 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		[[self target] sendMessage:[message body] withEncoding:_encoding withAttributes:[message attributes]];
 }
 
-- (BOOL) processUserCommand:(NSString *) command withArguments:(NSAttributedString *) arguments {
-	NSMethodSignature *signature = [NSMethodSignature methodSignatureWithReturnAndArgumentTypes:@encode( BOOL ), @encode( NSString * ), @encode( NSAttributedString * ), @encode( MVChatConnection * ), @encode( id ), nil];
-	NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-
-	MVChatConnection *connection = [self connection];
-
-	[invocation setSelector:@selector( processUserCommand:withArguments:toConnection:inView: )];
-	MVAddUnsafeUnretainedAddress(command, 2);
-	MVAddUnsafeUnretainedAddress(arguments, 3);
-	MVAddUnsafeUnretainedAddress(connection, 4);
-	MVAddUnsafeUnretainedAddress(self, 5);
-
-	NSArray *results = [[MVChatPluginManager defaultManager] makePluginsPerformInvocation:invocation stoppingOnFirstSuccessfulReturn:YES];
-	return [[results lastObject] boolValue];
-}
-
 #pragma mark -
 #pragma mark ScrollBack
 
 - (IBAction) clear:(id) sender {
-	[send reset:nil];
+	sendViewController.stringToSend = nil;
 }
 
 - (IBAction) clearDisplay:(id) sender {
@@ -1152,205 +1114,8 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	[display mark];
 }
 
-#pragma mark -
-#pragma mark TextView Support
 
-- (BOOL) textView:(NSTextView *) textView enterKeyPressed:(NSEvent *) event {
-	BOOL ret = NO;
 
-	if( [textView hasMarkedText] ) {
-		ret = NO;
-	} else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatSendOnEnter"] ) {
-		[self send:nil];
-		ret = YES;
-	} else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatActionOnEnter"] ) {
-		[self send:[NSNumber numberWithBool:YES]];
-		ret = YES;
-	}
-
-	return ret;
-}
-
-- (BOOL) textView:(NSTextView *) textView returnKeyPressed:(NSEvent *) event {
-	BOOL ret = NO;
-
-	if( [textView hasMarkedText] ) {
-		ret = NO;
-	} else if( ( [event modifierFlags] & NSAlternateKeyMask ) != 0 ) {
-		ret = NO;
-	} else if( ([event modifierFlags] & NSControlKeyMask) != 0 ) {
-		[self send:[NSNumber numberWithBool:YES]];
-		ret = YES;
-	} else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatSendOnReturn"] ) {
-		[self send:nil];
-		ret = YES;
-	} else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MVChatActionOnReturn"] ) {
-		[self send:[NSNumber numberWithBool:YES]];
-		ret = YES;
-	}
-
-	return ret;
-}
-
-- (BOOL) upArrowKeyPressed {
-	if( ! _historyIndex && [_sendHistory count] )
-		[_sendHistory replaceObjectAtIndex:0 withObject:[[send textStorage] copy]];
-
-	_historyIndex++;
-
-	if( _historyIndex >= (NSInteger) [_sendHistory count] ) {
-		if( [_sendHistory count] >= 1 )
-			_historyIndex = [_sendHistory count] - 1;
-		else _historyIndex = 0;
-		return YES;
-	}
-
-	[send reset:nil];
-	[[send textStorage] insertAttributedString:[_sendHistory objectAtIndex:_historyIndex] atIndex:0];
-
-	return YES;
-}
-
-- (BOOL) downArrowKeyPressed {
-	if( ! _historyIndex && [_sendHistory count] )
-		[_sendHistory replaceObjectAtIndex:0 withObject:[[send textStorage] copy]];
-
-	if( [[send string] length] ) _historyIndex--;
-
-	if( _historyIndex < 0 ) {
-		[send reset:nil];
-		_historyIndex = -1;
-		return YES;
-	} else if( ! [_sendHistory count] ) {
-		_historyIndex = 0;
-		return YES;
-	}
-
-	[send reset:nil];
-	[[send textStorage] insertAttributedString:[_sendHistory objectAtIndex:_historyIndex] atIndex:0];
-
-	return YES;
-}
-
-- (BOOL) textView:(NSTextView *) textView functionKeyPressed:(NSEvent *) event {
-	unichar chr = 0;
-
-	if( [[event charactersIgnoringModifiers] length] ) {
-		chr = [[event charactersIgnoringModifiers] characterAtIndex:0];
-	} else return NO;
-
-	// exclude device-dependent flags, caps-lock and fn key (necessary for pg up/pg dn/home/end on portables)
-	if( [event modifierFlags] & ~( NSFunctionKeyMask | NSNumericPadKeyMask | NSAlphaShiftKeyMask | NSAlternateKeyMask | 0xffff ) ) return NO;
-
-	BOOL usesOnlyArrows = [[NSUserDefaults standardUserDefaults] boolForKey:@"JVSendHistoryUsesOnlyArrows"];
-
-	if( chr == NSUpArrowFunctionKey && ( usesOnlyArrows || [event modifierFlags] & NSAlternateKeyMask ) ) {
-		return [self upArrowKeyPressed];
-	} else if( chr == NSDownArrowFunctionKey && ( usesOnlyArrows || [event modifierFlags] & NSAlternateKeyMask ) ) {
-		return [self downArrowKeyPressed];
-	} else if( chr == NSPageUpFunctionKey || chr == NSPageDownFunctionKey || chr == NSHomeFunctionKey || chr == NSBeginFunctionKey || chr == NSEndFunctionKey ) {
-		[[[[display mainFrame] findFrameNamed:@"content"] frameView] keyDown:event];
-		return YES;
-	}
-
-	return NO;
-}
-
-- (BOOL) textView:(NSTextView *) textView escapeKeyPressed:(NSEvent *) event {
-	if( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputRetainsFormatting"] || ! [[send string] length] )
-		[send reset:nil];
-	else [send setString:@""];
-	return YES;
-}
-
-- (NSArray *) textView:(NSTextView *) textView stringCompletionsForPrefix:(NSString *) prefix {
-	NSMutableArray *possibleCompletion = [NSMutableArray array];
-
-	if( [[self title] rangeOfString:prefix options:( NSCaseInsensitiveSearch | NSAnchoredSearch )].location == 0 )
-		[possibleCompletion addObject:[self title]];
-	if( [[[self connection] nickname] rangeOfString:prefix options:( NSCaseInsensitiveSearch | NSAnchoredSearch )].location == 0 )
-		[possibleCompletion addObject:[[self connection] nickname] ?: @""];
-
-	static NSArray *commands;
-	if (!commands) commands = [[NSArray alloc] initWithObjects:@"/me ", @"/msg ", @"/nick ", @"/away ", @"/say ", @"/raw ", @"/quote ", @"/join ", @"/quit ", @"/disconnect ", @"/query ", @"/umode ", @"/google ", @"/part ", nil];
-
-	for( NSString *name in commands )
-		if ([name hasCaseInsensitivePrefix:prefix])
-			[possibleCompletion addObject:name];
-
-	for ( MVChatRoom* room in self.connection.knownChatRooms )
-	{
-		if ( [room.uniqueIdentifier hasCaseInsensitivePrefix:prefix] )
-			[possibleCompletion addObject:room.uniqueIdentifier];
-		if ( [room.displayName hasCaseInsensitivePrefix:prefix] )
-			[possibleCompletion addObject:room.displayName];
-	}
-
-	return possibleCompletion;
-}
-
-- (NSArray *) textView:(NSTextView *) textView completions:(NSArray *) words forPartialWordRange:(NSRange) charRange indexOfSelectedItem:(NSInteger *) index {
-	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
-	NSString *search = [[[send textStorage] string] substringWithRange:charRange];
-	NSMutableArray *ret = [NSMutableArray array];
-	NSString *suffix = ( ! ( [event modifierFlags] & NSAlternateKeyMask ) ? ( charRange.location == 0 ? @": " : @" " ) : @"" );
-	NSString *comparison = [[[self user] nickname] substringToIndex:[search length]];
-
-	if( [search length] <= [[self title] length] && comparison && [search caseInsensitiveCompare:comparison] == NSOrderedSame )
-		[ret addObject:[[self title] stringByAppendingString:suffix] ?: @""];
-	comparison = [[[self connection] nickname] substringToIndex:[search length]];
-	if( [search length] <= [[[self connection] nickname] length] && comparison && [search caseInsensitiveCompare:comparison] == NSOrderedSame )
-		[ret addObject:[[[self connection] nickname] stringByAppendingString:suffix] ?: @""];
-
-	unichar chr = 0;
-	if( [[event charactersIgnoringModifiers] length] )
-		chr = [[event charactersIgnoringModifiers] characterAtIndex:0];
-
-	if( chr != NSTabCharacter ) [ret addObjectsFromArray:words];
-	return ret;
-}
-
-- (void) textDidChange:(NSNotification *) notification {
-	_historyIndex = 0;
-
-	if( ! [[send string] length] && ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputRetainsFormatting"] )
-		[send reset:nil];
-
-	if( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputAutoResizes"] )
-		return;
-
-	// We need to resize the textview to fit the content.
-	// The scroll views are two superviews up: NSTextView(WebView) -> NSClipView -> NSScrollView
-	NSSplitView *splitView = (NSSplitView *)[[[send superview] superview] superview];
-	NSRect splitViewFrame = [splitView frame];
-	NSSize contentSize = [send minimumSizeForContent];
-	NSRect sendFrame = [[[send superview] superview] frame];
-	float dividerThickness = [splitView dividerThickness];
-	float maxContentHeight = ( NSHeight( splitViewFrame ) - dividerThickness - 75. );
-	float newContentHeight =  MIN( maxContentHeight, MAX( 22., contentSize.height + 8. ) );
-
-	if( newContentHeight == NSHeight( sendFrame ) ) return;
-
-	NSRect webFrame = [display frame];
-
-	// Set size of the web view to the maximum size possible
-	webFrame.size.height = NSHeight( splitViewFrame ) - dividerThickness - newContentHeight;
-	webFrame.origin = NSMakePoint( 0., 0. );
-
-	// Keep the send box the same size
-	sendFrame.size.height = newContentHeight;
-	sendFrame.origin.y = NSHeight( webFrame ) + dividerThickness;
-
-	_scrollerIsAtBottom = [display scrolledNearBottom];
-
-	// Commit the changes
-	[[[send superview] superview] setFrame:sendFrame];
-	[display setFrame:webFrame];
-
-	[splitView adjustSubviews];
-
-	if( _scrollerIsAtBottom ) [display scrollToBottom];
-}
 
 #pragma mark -
 #pragma mark SplitView Support
@@ -1363,7 +1128,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 - (void) splitViewDidResizeSubviews:(NSNotification *) notification {
 	// Cache the height of the send box so we can keep it constant during window resizes.
-	NSRect sendFrame = [[[send superview] superview] frame];
+	NSRect sendFrame = sendViewController.view.frame;
 	_sendHeight = sendFrame.size.height;
 
 	if( _scrollerIsAtBottom ) [display scrollToBottom];
@@ -1386,7 +1151,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 	// We need to resize the scroll view frames of the webview and the textview.
 	// The scroll views are two superviews up: NSTextView(WebView) -> NSClipView -> NSScrollView
-	NSRect sendFrame = [[[send superview] superview] frame];
+	NSRect sendFrame = sendViewController.view.frame;
 	NSRect webFrame = [display frame];
 
 	// Set size of the web view to the maximum size possible
@@ -1400,11 +1165,8 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	sendFrame.origin.y = NSHeight( webFrame ) + dividerThickness;
 
 	// Commit the changes
-	[[[send superview] superview] setFrame:sendFrame];
-	sendFrame = [send frame];
 	sendFrame.size.width = newFrame.size.width;
-	[send setFrame:sendFrame];
-
+	sendViewController.view.frame = sendFrame;
 	[display setFrame:webFrame];
 }
 
@@ -1671,90 +1433,9 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	}
 }
 
-- (void) _updateEmoticonsMenu {
-	NSEnumerator *enumerator = nil;
-	NSMenu *menu = nil, *subMenu = nil;
-	NSMenuItem *menuItem = nil;
-	BOOL new = YES;
-
-	if( ! ( menu = _emoticonMenu ) ) {
-		menu = [[NSMenu alloc] initWithTitle:@""];
-		_emoticonMenu = menu;
-	} else {
-		new = NO;
-		enumerator = [[[menu itemArray] copy] objectEnumerator];
-		if( ! [menu indexOfItemWithTitle:NSLocalizedString( @"Emoticons", "choose emoticons toolbar item label" )] )
-			[enumerator nextObject];
-		while( ( menuItem = [enumerator nextObject] ) )
-			if( ! [menuItem tag] && ! [menuItem isSeparatorItem] )
-				[menu removeItem:menuItem];
-	}
-
-	NSUInteger count = 0;
-	if( ! [menu indexOfItemWithTitle:NSLocalizedString( @"Emoticons", "choose emoticons toolbar item label" )] )
-		count++;
-
-	NSArray *menuItems = [[self emoticons] emoticonMenuItems];
-	for( menuItem in menuItems ) {
-		[menuItem setAction:@selector( _insertEmoticon: )];
-		[menuItem setTarget:self];
-		[menu insertItem:menuItem atIndex:count++];
-	}
-
-	if( ! [menuItems count] ) {
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"No Selectable Emoticons", "no selectable emoticons menu item title" ) action:NULL keyEquivalent:@""];
-		[menuItem setEnabled:NO];
-		[menu insertItem:menuItem atIndex:count];
-	}
-
-	if( new ) {
-		JVEmoticonSet *emoticon = nil;
-
-		[menu addItem:[NSMenuItem separatorItem]];
-
-		subMenu = [[NSMenu alloc] initWithTitle:@""];
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Preferences", "preferences menu item title" ) action:NULL keyEquivalent:@""];
-		[menuItem setSubmenu:subMenu];
-		[menuItem setTag:20];
-		[menu addItem:menuItem];
-
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Style Default", "default style emoticons menu item title" ) action:@selector( changeEmoticons: ) keyEquivalent:@""];
-		[menuItem setTarget:self];
-		[subMenu addItem:menuItem];
-
-		[subMenu addItem:[NSMenuItem separatorItem]];
-
-		menuItem = [[NSMenuItem alloc] initWithTitle:[[JVEmoticonSet textOnlyEmoticonSet] displayName] action:@selector( changeEmoticons: ) keyEquivalent:@""];
-		[menuItem setTarget:self];
-		[menuItem setRepresentedObject:[JVEmoticonSet textOnlyEmoticonSet]];
-		[subMenu addItem:menuItem];
-
-		[subMenu addItem:[NSMenuItem separatorItem]];
-
-		enumerator = [[[[JVEmoticonSet emoticonSets] allObjects] sortedArrayUsingSelector:@selector( compare: )] objectEnumerator];
-		while( ( emoticon = [enumerator nextObject] ) ) {
-			if( ! [[emoticon displayName] length] ) continue;
-			menuItem = [[NSMenuItem alloc] initWithTitle:[emoticon displayName] action:@selector( changeEmoticons: ) keyEquivalent:@""];
-			[menuItem setTarget:self];
-			[menuItem setRepresentedObject:emoticon];
-			[subMenu addItem:menuItem];
-		}
-
-		[subMenu addItem:[NSMenuItem separatorItem]];
-
-		menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Appearance Preferences...", "appearance preferences menu item title" ) action:@selector( _openAppearancePreferences: ) keyEquivalent:@""];
-		[menuItem setTarget:self];
-		[menuItem setTag:10];
-		[subMenu addItem:menuItem];
-	}
-
-	[self _changeEmoticonsMenuSelection];
-}
 
 - (void) _insertEmoticon:(id) sender {
-	if( [[send string] length] )
-		[send replaceCharactersInRange:NSMakeRange( [[send string] length], 0 ) withString:@" "];
-	[send replaceCharactersInRange:NSMakeRange( [[send string] length], 0 ) withString:[NSString stringWithFormat:@"%@ ", [sender representedObject]]];
+	[sendViewController insertEmoticon:(NSString *)[sender representedObject]];
 }
 
 - (BOOL) _usingSpecificStyle {
@@ -1767,7 +1448,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 - (void) _didSwitchStyles:(NSNotification *) notification {
 	[super _didSwitchStyles:notification];
-
+	
 	NSFont *baseFont = nil;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputUsesStyleFont"] ) {
 		WebPreferences *preferences = [display preferences];
@@ -1778,7 +1459,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		if( ! baseFont ) baseFont = [[NSFontManager sharedFontManager] fontWithFamily:fontFamily traits:( NSUnboldFontMask | NSUnitalicFontMask ) weight:5 size:fontSize];
 	}
 
-	[send setBaseFont:baseFont];
+	[sendViewController.sendTextView setBaseFont:baseFont];
 }
 
 - (void) _saveSelfIcon {

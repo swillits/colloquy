@@ -16,6 +16,7 @@
 #import "JVMarkedScroller.h"
 #import "NSBundleAdditions.h"
 #import "NSDateAdditions.h"
+#import "CQEmoticonMenu.h"
 
 NSString *JVToolbarChooseStyleItemIdentifier = @"JVToolbarChooseStyleItem";
 NSString *JVToolbarEmoticonsItemIdentifier = @"JVToolbarEmoticonsItem";
@@ -28,7 +29,7 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 
 #pragma mark -
 
-@interface JVChatTranscriptPanel ()
+@interface JVChatTranscriptPanel () <CQEmoticonMenuDelegate>
 - (void) savePanelDidEnd:(NSSavePanel *) sheet returnCode:(NSInteger) returnCode contextInfo:(void *) contextInfo;
 @end
 
@@ -45,7 +46,7 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 
 		[[NSNotificationCenter chatCenter] addObserver:self selector:@selector( _updateStylesMenu ) name:JVStylesScannedNotification object:nil];
 		[[NSNotificationCenter chatCenter] addObserver:self selector:@selector( _updateStylesMenu ) name:JVNewStyleVariantAddedNotification object:nil];
-		[[NSNotificationCenter chatCenter] addObserver:self selector:@selector( _updateEmoticonsMenu ) name:JVEmoticonSetsScannedNotification object:nil];
+		
 	}
 
 	return self;
@@ -87,7 +88,6 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 	}
 
 	[self _updateStylesMenu];
-	[self _updateEmoticonsMenu];
 }
 
 - (void) dealloc {
@@ -102,8 +102,8 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 
 
 	contents = nil;
+	_emoticonsMenu.delegate = nil;
 	_styleMenu = nil;
-	_emoticonMenu = nil;
 	_transcript = nil;
 	_searchQuery = nil;
 	_searchQueryRegex = nil;
@@ -391,12 +391,26 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 - (void) setEmoticons:(JVEmoticonSet *) emoticons {
 	if( ! emoticons ) emoticons = [[self style] defaultEmoticonSet];
 	[display setEmoticons:emoticons];
-	[self _updateEmoticonsMenu];
 }
 
 - (JVEmoticonSet *) emoticons {
 	return [display emoticons];
 }
+
+- (JVEmoticonSet *)selectedEmoticonsSetInMenu:(CQEmoticonMenu *)menu isOverride:(BOOL *)isOverride
+{
+	if (isOverride) {
+		*isOverride = self._usingSpecificEmoticons;
+	}
+	return self.emoticons;
+}
+
+- (BOOL)shouldEnumerateEmoticonsInMenu:(CQEmoticonMenu *)menu
+{
+	return NO;
+}
+
+
 
 #pragma mark -
 #pragma mark Transcript Access
@@ -508,7 +522,7 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 			[button setRetina:(self.window.backingScaleFactor > 1.0)];
 			[button setImage:image];
 			[button setDrawsArrow:YES];
-			[button setMenu:_emoticonMenu];
+			[button setMenu:self._emoticonsMenu];
 
 			[toolbarItem setToolTip:NSLocalizedString( @"Change Emoticons", "choose emoticons toolbar item tooltip" )];
 			[button setToolbarItem:toolbarItem];
@@ -519,7 +533,7 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 			NSImage *icon = [image copy];
 			[icon setSize:NSMakeSize( 16., 16. )];
 			[menuItem setImage:icon];
-			[menuItem setSubmenu:_emoticonMenu];
+			[menuItem setSubmenu:_emoticonsMenu];
 
 			[toolbarItem setMenuFormRepresentation:menuItem];
 		} else {
@@ -614,7 +628,7 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 		[ret addObject:item];
 
 		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Emoticons", "choose emoticons contextual menu" ) action:NULL keyEquivalent:@""];
-		NSMenu *menu = [[self _emoticonsMenu] copy];
+		NSMenu *menu = [self._emoticonsMenu copy];
 		[item setSubmenu:menu];
 		[ret addObject:item];
 	}
@@ -884,67 +898,11 @@ NSString *JVToolbarQuickSearchItemIdentifier = @"JVToolbarQuickSearchItem";
 #pragma mark Emoticons Support
 
 - (NSMenu *) _emoticonsMenu {
-	if( [_emoticonMenu itemWithTag:20] )
-		return [[_emoticonMenu itemWithTag:20] submenu];
-	return _emoticonMenu;
-}
-
-- (void) _changeEmoticonsMenuSelection {
-	BOOL hasPerRoomEmoticons = [self _usingSpecificEmoticons];
-
-	NSArray *array = [[[_emoticonMenu itemWithTag:20] submenu] itemArray];
-	if (!array.count) array = [_emoticonMenu itemArray];
-
-	for( NSMenuItem *menuItem in array ) {
-		if( [menuItem tag] ) continue;
-		if( [[self emoticons] isEqualTo:[menuItem representedObject]] && hasPerRoomEmoticons ) [menuItem setState:NSOnState];
-		else if( ! [menuItem representedObject] && ! hasPerRoomEmoticons ) [menuItem setState:NSOnState];
-		else if( [[self emoticons] isEqualTo:[menuItem representedObject]] && ! hasPerRoomEmoticons ) [menuItem setState:NSMixedState];
-		else [menuItem setState:NSOffState];
+	if (!_emoticonsMenu) {
+		_emoticonsMenu = [[CQEmoticonMenu alloc] init];
+		_emoticonsMenu.delegate = self;
 	}
-}
-
-- (void) _updateEmoticonsMenu {
-	NSMenu *menu = nil;
-	NSMenuItem *menuItem = nil;
-
-	if( ! ( menu = _emoticonMenu ) ) {
-		menu = [[NSMenu alloc] initWithTitle:@""];
-		_emoticonMenu = menu;
-	} else {
-		[menu removeAllItems];
-	}
-
-	menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Style Default", "default style emoticons menu item title" ) action:@selector( changeEmoticons: ) keyEquivalent:@""];
-	[menuItem setTarget:self];
-	[menuItem setRepresentedObject:nil];
-	[menu addItem:menuItem];
-
-	[menu addItem:[NSMenuItem separatorItem]];
-
-	menuItem = [[NSMenuItem alloc] initWithTitle:[[JVEmoticonSet textOnlyEmoticonSet] displayName] action:@selector( changeEmoticons: ) keyEquivalent:@""];
-	[menuItem setTarget:self];
-	[menuItem setRepresentedObject:[JVEmoticonSet textOnlyEmoticonSet]];
-	[menu addItem:menuItem];
-
-	[menu addItem:[NSMenuItem separatorItem]];
-
-	for( JVEmoticonSet *emoticon in [[[JVEmoticonSet emoticonSets] allObjects] sortedArrayUsingSelector:@selector( compare: )] ) {
-		if( ! [[emoticon displayName] length] ) continue;
-		menuItem = [[NSMenuItem alloc] initWithTitle:[emoticon displayName] action:@selector( changeEmoticons: ) keyEquivalent:@""];
-		[menuItem setTarget:self];
-		[menuItem setRepresentedObject:emoticon];
-		[menu addItem:menuItem];
-	}
-
-	[menu addItem:[NSMenuItem separatorItem]];
-
-	menuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Appearance Preferences...", "appearance preferences menu item title" ) action:@selector( _openAppearancePreferences: ) keyEquivalent:@""];
-	[menuItem setTarget:self];
-	[menuItem setTag:10];
-	[menu addItem:menuItem];
-
-	[self _changeEmoticonsMenuSelection];
+	return _emoticonsMenu;
 }
 
 - (BOOL) _usingSpecificEmoticons {
