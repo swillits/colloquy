@@ -67,6 +67,9 @@ static NSMutableDictionary *createBaseDictionary(NSString *server, NSString *acc
 
 - (NSString *__nullable) passwordForServer:(NSString *) server area:(NSString *) area {
 	NSData *data = [self dataForServer:server area:area];
+	if (!data) {
+		return nil;
+	}
 	return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 

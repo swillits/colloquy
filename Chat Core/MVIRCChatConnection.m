@@ -462,8 +462,9 @@ NSString *const MVIRCChatConnectionZNCPluginPlaybackFeature = @"MVIRCChatConnect
 	if( ! _nickname || ! connectiongOrConnected )
 		MVSafeCopyAssign( _nickname, newNickname );
 
-	if( [newNickname isEqualToString:_currentNickname] )
+	if((newNickname && _currentNickname && [newNickname isEqualToString:_currentNickname]) || (!_currentNickname && !newNickname)) {
 		return;
+	}
 
 	if( ! _currentNickname || ! connectiongOrConnected )
 		[self _setCurrentNickname:newNickname];
