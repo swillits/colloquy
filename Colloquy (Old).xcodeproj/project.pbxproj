@@ -244,6 +244,8 @@
 		5D3B84F91FAE639F00B1D70C /* CQSendCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84F81FAE639F00B1D70C /* CQSendCompletion.m */; };
 		5DBEFD1D1FAE6D2C001D5759 /* CQSendView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */; };
 		5DF1F6661FAE97E9003F66B1 /* CQEmoticonMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */; };
+		5DF1F6A01FAEEDFE003F66B1 /* JVClassicChatWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF1F69F1FAEEDFE003F66B1 /* JVClassicChatWindowController.m */; };
+		5DFE89471FAF77590064CB61 /* JVChatWindowScripting.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DFE89461FAF77590064CB61 /* JVChatWindowScripting.m */; };
 		891E8467123F0AEF00EC3C0F /* NSCharacterSetAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */; };
 		891EF3D1106426CB00CCEA35 /* PFMoveApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */; };
 		89EB91AA0F269BEF0028B3E3 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89EB91A90F269BEF0028B3E3 /* Sparkle.framework */; };
@@ -761,6 +763,10 @@
 		5DBEFD1C1FAE6D2C001D5759 /* CQSendView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CQSendView.xib; path = Resources/CQSendView.xib; sourceTree = "<group>"; };
 		5DF1F6641FAE97E9003F66B1 /* CQEmoticonMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQEmoticonMenu.h; path = Views/CQEmoticonMenu.h; sourceTree = "<group>"; };
 		5DF1F6651FAE97E9003F66B1 /* CQEmoticonMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQEmoticonMenu.m; path = Views/CQEmoticonMenu.m; sourceTree = "<group>"; };
+		5DF1F69E1FAEEDFE003F66B1 /* JVClassicChatWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JVClassicChatWindowController.h; path = Controllers/JVClassicChatWindowController.h; sourceTree = "<group>"; };
+		5DF1F69F1FAEEDFE003F66B1 /* JVClassicChatWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JVClassicChatWindowController.m; path = Controllers/JVClassicChatWindowController.m; sourceTree = "<group>"; };
+		5DFE89451FAF77590064CB61 /* JVChatWindowScripting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JVChatWindowScripting.h; path = Controllers/JVChatWindowScripting.h; sourceTree = "<group>"; };
+		5DFE89461FAF77590064CB61 /* JVChatWindowScripting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JVChatWindowScripting.m; path = Controllers/JVChatWindowScripting.m; sourceTree = "<group>"; };
 		891E8465123F0AEF00EC3C0F /* NSCharacterSetAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSCharacterSetAdditions.h; path = Additions/NSCharacterSetAdditions.h; sourceTree = "<group>"; };
 		891E8466123F0AEF00EC3C0F /* NSCharacterSetAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSCharacterSetAdditions.m; path = Additions/NSCharacterSetAdditions.m; sourceTree = "<group>"; };
 		891EF3D0106426CB00CCEA35 /* PFMoveApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplicationController.m; path = Controllers/PFMoveApplicationController.m; sourceTree = "<group>"; };
@@ -1506,6 +1512,10 @@
 				1CE2BC53042F75FB00000102 /* JVChatController.h */,
 				1CE2BC1E042F4AD300000102 /* JVChatWindowController.m */,
 				1CE2BC1D042F4AD300000102 /* JVChatWindowController.h */,
+				5DFE89451FAF77590064CB61 /* JVChatWindowScripting.h */,
+				5DFE89461FAF77590064CB61 /* JVChatWindowScripting.m */,
+				5DF1F69E1FAEEDFE003F66B1 /* JVClassicChatWindowController.h */,
+				5DF1F69F1FAEEDFE003F66B1 /* JVClassicChatWindowController.m */,
 				1C710A0009F23730007B4515 /* JVSidebarChatWindowController.m */,
 				1C7109FF09F23730007B4515 /* JVSidebarChatWindowController.h */,
 				1C0A4CB90799BE000093B702 /* JVTabbedChatWindowController.m */,
@@ -2308,6 +2318,7 @@
 				1C0A4CBA0799BE000093B702 /* JVTabbedChatWindowController.m in Sources */,
 				1C0A4CE50799BE660093B702 /* JVTranscriptFindWindowController.m in Sources */,
 				1C0A4CF70799BEA70093B702 /* JVViewCell.m in Sources */,
+				5DF1F6A01FAEEDFE003F66B1 /* JVClassicChatWindowController.m in Sources */,
 				1C9014C107A2D798002942A7 /* MVChatUserAdditions.m in Sources */,
 				1CF79CBF07AC77E600696918 /* JVChatTranscript.m in Sources */,
 				1C5EF35B07B45C1F004E66D3 /* JVChatEvent.m in Sources */,
@@ -2321,6 +2332,7 @@
 				C23298991C3D98230085CBF7 /* NSWindow+CQMCoordinateSpaceConversion.m in Sources */,
 				1C710A6C09F23AF0007B4515 /* JVSideSplitView.m in Sources */,
 				1C710A6E09F23AF0007B4515 /* JVSideStatusView.m in Sources */,
+				5DFE89471FAF77590064CB61 /* JVChatWindowScripting.m in Sources */,
 				1C710A7009F23AF0007B4515 /* JVSideOutlineView.m in Sources */,
 				1C415F270B350CA300239EB3 /* JVToolbarItem.m in Sources */,
 				DDF034100BD529AE0096B109 /* JVDetailCell.m in Sources */,

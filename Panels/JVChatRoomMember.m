@@ -10,6 +10,11 @@
 #import "MVChatUserAdditions.h"
 
 
+
+NSString * const JVChatRoomMemberInfoDidChangeNotificationName = @"JVChatRoomMemberInfoDidChangeNotification";
+NSString * const JVChatRoomMemberKey = @"JVChatRoomMember";
+
+
 @implementation JVChatRoomMember
 + (void) initialize {
 	[super initialize];
@@ -695,7 +700,7 @@
 }
 
 - (void) _refreshIcon:(NSNotification *) notification {
-	[[_room windowController] reloadListItem:self andChildren:NO];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatRoomMemberInfoDidChangeNotificationName object:_room userInfo:@{JVChatRoomMemberKey : self}];
 }
 
 - (NSString *) _selfCompositeName {

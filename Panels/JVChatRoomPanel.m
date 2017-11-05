@@ -17,6 +17,7 @@
 #import "CQSendCompletion.h"
 
 NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdateNotification";
+NSString *const JVChatRoomPanelMembersDidChangeNotification = @"JVChatRoomPanelMembersDidChangeNotification";
 
 @interface JVChatRoomPanel (Private)
 // TODO: This method is overwriting a method of superclass category JVDirectChatPanel+Private, undefined behavior.
@@ -469,7 +470,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 	_cantSendMessages = NO;
 	_kickedFromRoom = NO;
 
-	[_windowController reloadListItem:self andChildren:YES];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatRoomPanelMembersDidChangeNotification object:self userInfo:nil];
 
 	NSMethodSignature *signature = [NSMethodSignature methodSignatureWithReturnAndArgumentTypes:@encode( void ), @encode( JVChatRoomPanel * ), nil];
 	NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
@@ -605,7 +606,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 	NSString *pattern = [[NSString alloc] initWithFormat:@"(?<=^|\\s|[^\\w])%@(?=$|\\s|[^\\w])", regexEscapedNicknames];
 	_membersRegex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
 
-	[_windowController reloadListItem:self andChildren:YES];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatRoomPanelMembersDidChangeNotification object:self userInfo:nil];
 }
 
 #pragma mark -
@@ -724,8 +725,9 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 - (void) _didDisconnect:(NSNotification *) notification {
 	_kickedFromRoom = NO;
 	[super _didDisconnect:notification];
-	[_windowController reloadListItem:self andChildren:YES];
-
+	
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
+	
 	[[NSNotificationCenter chatCenter] removeObserver:self name:MVChatConnectionNicknameAcceptedNotification object:nil];
 	[[NSNotificationCenter chatCenter] removeObserver:self name:MVChatRoomTopicChangedNotification object:nil];
 }
@@ -991,9 +993,6 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	[[MVChatPluginManager defaultManager] makePluginsPerformInvocation:invocation];
 
-	if( [_windowController selectedListItem] == member )
-		[_windowController showChatViewController:[_windowController activeChatViewController]];
-
 	NSString *name = [member title];
 	NSString *message = [NSString stringWithFormat:NSLocalizedString( @"<span class=\"member\">%@</span> left the chat room.", "a user has left the chat room status message" ), [name stringByEncodingXMLSpecialCharactersAsEntities]];
 
@@ -1012,7 +1011,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 	[self._sendCompletionHandler removePreferredNickname:member.nickname];
 	[_sortedMembers removeObjectIdenticalTo:member];
 	[_nextMessageAlertMembers removeObject:member];
-	[_windowController reloadListItem:self andChildren:YES];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatRoomPanelMembersDidChangeNotification object:self userInfo:nil];
 }
 
 - (void) _userBricked:(NSNotification *) notification {
@@ -1075,15 +1074,12 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 	[[MVChatPluginManager defaultManager] makePluginsPerformInvocation:invocation];
 
 	JVChatRoomMember *member = [self localChatRoomMember];
-	if( [_windowController selectedListItem] == member )
-		[_windowController showChatViewController:[_windowController activeChatViewController]];
-
 	[member _detach];
 
 	[self._sendCompletionHandler removePreferredNickname:member.nickname];
 	[_sortedMembers removeObjectIdenticalTo:member];
 	[_nextMessageAlertMembers removeObject:member];
-	[_windowController reloadListItem:self andChildren:YES];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatRoomPanelMembersDidChangeNotification object:self userInfo:nil];
 
 	_kickedFromRoom = YES;
 	_cantSendMessages = YES;
@@ -1129,15 +1125,12 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	[[MVChatPluginManager defaultManager] makePluginsPerformInvocation:invocation];
 
-	if( [_windowController selectedListItem] == member )
-		[_windowController showChatViewController:[_windowController activeChatViewController]];
-
 	[member _detach];
 
 	[self._sendCompletionHandler removePreferredNickname:member.nickname];
 	[_sortedMembers removeObjectIdenticalTo:member];
 	[_nextMessageAlertMembers removeObject:member];
-	[_windowController reloadListItem:self andChildren:YES];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatRoomPanelMembersDidChangeNotification object:self userInfo:nil];
 
 	NSString *message = nil;
 	if( [byMember isLocalUser] ) {

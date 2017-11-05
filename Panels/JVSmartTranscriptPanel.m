@@ -276,7 +276,7 @@ static NSString *JVToolbarRuleSettingsItemIdentifier = @"JVToolbarRuleSettingsIt
 	_ignoreCase = ( [ignoreCase state] == NSOnState );
 	_operation = [operation selectedTag];
 
-	[_windowController reloadListItem:self andChildren:NO];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
 
 	[[JVChatController defaultController] saveSmartTranscripts];
 }
@@ -317,7 +317,7 @@ static NSString *JVToolbarRuleSettingsItemIdentifier = @"JVToolbarRuleSettingsIt
 	[self quickSearchMatchMessage:localMessage];
 
 	_newMessages++;
-	[_windowController reloadListItem:self andChildren:NO];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
 	if( ! _isActive ) [JVChatController refreshSmartTranscriptMenu];
 }
 

@@ -25,10 +25,25 @@
 
 	[splitView setMainSubviewIndex:1];
 	[splitView setPositionUsingName:@"JVSidebarSplitViewPosition"];
+	
+	[self reloadList];
 }
 
+
+
+
+
+
+
+
+
+
+
+#pragma mark -
+#pragma mark Outline View
+
 - (CGFloat) outlineView:(NSOutlineView *) outlineView heightOfRowByItem:(id) item {
-	BOOL smallIcons = ([outlineView levelForItem:item] || _usesSmallIcons);
+	BOOL smallIcons = ([outlineView levelForItem:item] || self.usesSmallIcons);
 	if( smallIcons )
 		return 18.;
 	return 34.;
@@ -41,6 +56,12 @@
 		[(JVDetailCell *)cell setLeftMargin:12.];
 	else [(JVDetailCell *)cell setLeftMargin:0.];
 }
+
+
+
+
+#pragma mark -
+#pragma mark Split View
 
 - (CGFloat) splitView:(NSSplitView *) splitView constrainSplitPosition:(CGFloat) proposedPosition ofSubviewAt:(NSInteger) index {
 	// don't do anything here
@@ -75,41 +96,30 @@
 	return nil;
 }
 
-- (void) _refreshWindow {
-	id item = [self selectedListItem];
-	if( ! item ) return;
 
-	if( ( [item conformsToProtocol:@protocol( JVChatViewController )] && item != (id) _activeViewController ) || ( ! _activeViewController && [[item parent] conformsToProtocol:@protocol( JVChatViewController )] && ( item = [item parent] ) ) ) {
-		id lastActive = _activeViewController;
-		if( [_activeViewController respondsToSelector:@selector( willUnselect )] )
-			[(NSObject *)_activeViewController willUnselect];
-		if( [item respondsToSelector:@selector( willSelect )] )
-			[(NSObject *)item willSelect];
 
-		_activeViewController = item;
-
+- (void)updateInterfaceSwappingOutChatViewController:(id<JVChatViewController>)old
+{
+	if (self.activeChatViewController) {
 		[[[bodyView subviews] lastObject] removeFromSuperview];
 
-		NSView *newView = [_activeViewController view];
+		NSView *newView = [self.activeChatViewController view];
 		[newView setAutoresizingMask:( NSViewWidthSizable | NSViewHeightSizable )];
 		[newView setFrame:[bodyView bounds]];
 		[bodyView addSubview:newView];
 
-		[[self window] makeFirstResponder:[[_activeViewController view] nextKeyView]];
+		[[self window] makeFirstResponder:[[self.activeChatViewController view] nextKeyView]];
 
-		[self _refreshToolbar];
-
-		if( [lastActive respondsToSelector:@selector( didUnselect )] )
-			[(NSObject *)lastActive didUnselect];
-		if( [_activeViewController respondsToSelector:@selector( didSelect )] )
-			[(NSObject *)_activeViewController didSelect];
-	} else if( ! [_views count] || ! _activeViewController ) {
+		[self refreshToolbar];
+		
+	} else {
 		[[[bodyView subviews] lastObject] removeFromSuperview];
-		[[[self window] toolbar] setDelegate:nil];
-		[[self window] setToolbar:nil];
-		[[self window] makeFirstResponder:nil];
+		
+		self.window.toolbar.delegate = nil;
+		self.window.toolbar = nil;
 	}
-
-	[self _refreshWindowTitle];
+	
+	[self refreshWindowTitle];
 }
+
 @end

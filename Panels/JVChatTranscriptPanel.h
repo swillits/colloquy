@@ -1,5 +1,5 @@
 #import "JVChatWindowController.h"
-
+#import "JVChatWindowScripting.h"
 #import <WebKit/WebKit.h>
 
 @class JVStyleView;

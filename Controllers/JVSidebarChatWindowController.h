@@ -1,8 +1,8 @@
-#import "JVChatWindowController.h"
+#import "JVClassicChatWindowController.h"
 
 @class JVSideSplitView;
 
-@interface JVSidebarChatWindowController : JVChatWindowController {
+@interface JVSidebarChatWindowController : JVClassicChatWindowController {
 	IBOutlet JVSideSplitView *splitView;
 	IBOutlet NSView *bodyView;
 	BOOL _forceSplitViewPosition;

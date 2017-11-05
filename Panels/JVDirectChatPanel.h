@@ -12,6 +12,8 @@
 @class CQSendViewController;
 @class JVSplitView;
 
+
+
 extern NSString *JVToolbarTextEncodingItemIdentifier;
 extern NSString *JVToolbarClearScrollbackItemIdentifier;
 extern NSString *JVToolbarSendFileItemIdentifier;
@@ -20,8 +22,18 @@ extern NSString *JVToolbarMarkItemIdentifier;
 extern NSString *JVChatMessageWasProcessedNotification;
 extern NSString *JVChatEventMessageWasProcessedNotification;
 
+
+
+@protocol JVCanHaveNewMessages <NSObject>
+- (NSUInteger) newMessagesWaiting;
+- (NSUInteger) newHighlightMessagesWaiting;
+@end
+
+
+
+
 COLLOQUY_EXPORT
-@interface JVDirectChatPanel : JVChatTranscriptPanel <WebUIDelegate, WebPolicyDelegate> {
+@interface JVDirectChatPanel : JVChatTranscriptPanel <JVCanHaveNewMessages, WebUIDelegate, WebPolicyDelegate> {
 	@protected
 	IBOutlet JVSplitView * sendDisplaySplitView;
 	IBOutlet NSView * sendViewPlaceholder;
@@ -76,9 +88,6 @@ COLLOQUY_EXPORT
 - (void) performNotification:(NSString *) identifier withContextInfo:(NSDictionary *) context;
 - (IBAction) toggleNotifications:(id) sender;
 
-- (NSUInteger) newMessagesWaiting;
-- (NSUInteger) newHighlightMessagesWaiting;
-
 - (IBAction) send:(id) sender;
 - (void) sendMessage:(JVMutableChatMessage *) message;
 
@@ -87,6 +96,8 @@ COLLOQUY_EXPORT
 - (IBAction) markDisplay:(id) sender;
 
 @end
+
+
 
 @interface NSObject (MVChatPluginDirectChatSupport)
 - (void) processIncomingMessage:(JVMutableChatMessage *) message inView:(id <JVChatViewController>) view;

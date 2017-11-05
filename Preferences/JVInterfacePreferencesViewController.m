@@ -59,7 +59,6 @@ static NSString *JVInterfacePreferencesWindowDragPboardType = @"JVInterfacePrefe
 - (IBAction) cancelRuleSet:(id) sender;
 
 - (IBAction) changeSortByStatus:(id) sender;
-- (IBAction) changeShowFullRoomName:(id) sender;
 
 - (IBAction) clear:(id) sender;
 
@@ -622,8 +621,12 @@ static NSString *JVInterfacePreferencesWindowDragPboardType = @"JVInterfacePrefe
 		[room resortMembers];
 }
 
-- (IBAction) changeShowFullRoomName:(id) sender {
-	for( JVChatRoomPanel *room in [[JVChatController defaultController] chatViewControllersOfClass:[JVChatRoomPanel class]] )
-		[[room windowController] reloadListItem:room andChildren:NO];
-}
+
+// TODO: Change to KVO pref observation
+//- (IBAction) changeShowFullRoomName:(id) sender {
+//	for( JVChatRoomPanel *room in [[JVChatController defaultController] chatViewControllersOfClass:[JVChatRoomPanel class]] ) {
+//		[[room windowController] reloadChatViewController:room andChildren:NO];
+//	}
+//}
+
 @end

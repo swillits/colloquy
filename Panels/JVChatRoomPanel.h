@@ -3,7 +3,8 @@
 @class JVChatRoomMember;
 @class MVChatUser;
 
-extern NSString *const MVFavoritesListDidUpdateNotification;
+extern NSString * const MVFavoritesListDidUpdateNotification;
+extern NSString * const JVChatRoomPanelMembersDidChangeNotification; 
 
 COLLOQUY_EXPORT
 @interface JVChatRoomPanel : JVDirectChatPanel {

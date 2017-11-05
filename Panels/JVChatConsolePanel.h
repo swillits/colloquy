@@ -1,4 +1,5 @@
 #import "JVChatWindowController.h"
+#import "JVChatWindowScripting.h"
 
 @class MVTextView;
 @class MVChatConnection;

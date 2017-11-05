@@ -441,16 +441,12 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		[sendViewController resizeToFit];
 	}
 
-	_newMessageCount = 0;
-	_newHighlightMessageCount = 0;
-	[(MVApplicationController *)[NSApp delegate] updateDockTile];
-	_isActive = YES;
-
 	[super didSelect];
-
-	[_windowController reloadListItem:self andChildren:NO];
+	[self didGetNoticedByUser];
+	
+	
 	[[[self view] window] makeFirstResponder:self.firstResponder];
-
+	
 	for (NSDictionary<NSString *, id> *alertDict in _waitingAlerts) {
 		NSString *alertKey = @"alert";
 		NSString *handlerKey = @"handler";
@@ -462,6 +458,22 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	}
 	[_waitingAlerts removeAllObjects];
 }
+
+
+- (void)didGetNoticedByUser
+{
+	_newMessageCount = 0;
+	_newHighlightMessageCount = 0;
+	[(MVApplicationController *)[NSApp delegate] updateDockTile];
+	_isActive = YES;
+	
+	[super didSelect];
+	
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
+}
+
+
+
 
 #pragma mark -
 #pragma mark Drag & Drop Support
@@ -494,7 +506,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		[_waitingAlerts addObject:(handler ? @{alertKey: alert, handlerKey: handler} : @{alertKey: alert})];
 	}
 
-	[_windowController reloadListItem:self andChildren:NO];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
 }
 
 #pragma mark -
@@ -880,7 +892,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 
 	[self _setCurrentMessage:nil];
 
-	[_windowController reloadListItem:self andChildren:NO];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
 
 	if( ! [[[_windowController window] representedFilename] length] )
 		[self _refreshWindowFileProxy];
@@ -1500,7 +1512,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 }
 
 - (void) _refreshIcon:(NSNotification *) notification {
-	[_windowController reloadListItem:self andChildren:NO];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
 }
 
 - (void) _setCurrentMessage:(JVMutableChatMessage *) message {

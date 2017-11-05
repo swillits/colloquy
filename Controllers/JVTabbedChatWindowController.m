@@ -39,7 +39,8 @@
 
 	[chatViewsOutlineView setRefusesFirstResponder:NO];
 	[chatViewsOutlineView setAllowsEmptySelection:YES];
-
+	[self reloadList];
+	
 	[[self window] registerForDraggedTypes:[NSArray arrayWithObjects:TAB_CELL_IDENTIFIER, nil]];
 }
 
@@ -47,8 +48,8 @@
 
 - (void) insertChatViewController:(id <JVChatViewController>) controller atIndex:(NSUInteger) index {
 	NSParameterAssert( controller != nil );
-	NSAssert1( ! [_views containsObject:controller], @"%@ already added.", controller );
-	NSAssert( index <= [_views count], @"Index is beyond bounds." );
+	NSAssert1( ! [self.allChatViewControllers containsObject:controller], @"%@ already added.", controller );
+	NSAssert( index <= [self.allChatViewControllers count], @"Index is beyond bounds." );
 	NSAssert( index <= [_tabItems count], @"Index is beyond bounds." );
 
 	[super insertChatViewController:controller atIndex:index];
@@ -62,7 +63,7 @@
 #pragma mark -
 
 - (void) removeChatViewController:(id <JVChatViewController>) controller {
-	NSUInteger index = [_views indexOfObjectIdenticalTo:controller];
+	NSUInteger index = [self.allChatViewControllers indexOfObjectIdenticalTo:controller];
 	[_tabItems removeObjectAtIndex:index];
 	[tabView removeTabViewItem:[tabView tabViewItemAtIndex:index]];
 	[super removeChatViewController:controller];
@@ -79,8 +80,8 @@
 
 - (void) replaceChatViewControllerAtIndex:(NSUInteger) index withController:(id <JVChatViewController>) controller {
 	NSParameterAssert( controller != nil );
-	NSAssert1( ! [_views containsObject:controller], @"%@ is already a member of this window controller.", controller );
-	NSAssert( index <= [_views count], @"Index is beyond bounds." );
+	NSAssert1( ! [self.allChatViewControllers containsObject:controller], @"%@ is already a member of this window controller.", controller );
+	NSAssert( index <= [self.allChatViewControllers count], @"Index is beyond bounds." );
 	NSAssert( index <= [_tabItems count], @"Index is beyond bounds." );
 
 	JVChatTabItem *newTab = [[JVChatTabItem alloc] initWithChatViewController:controller];
@@ -95,21 +96,21 @@
 #pragma mark -
 
 - (void) showChatViewController:(id <JVChatViewController>) controller {
-	NSAssert1( [_views containsObject:controller], @"%@ is not a member of this window controller.", controller );
+	NSAssert1( [self.allChatViewControllers containsObject:controller], @"%@ is not a member of this window controller.", controller );
 
-	NSUInteger index = [_views indexOfObjectIdenticalTo:controller];
+	NSUInteger index = [self.allChatViewControllers indexOfObjectIdenticalTo:controller];
 	[tabView selectTabViewItemAtIndex:index];
 
 	// [self _refreshWindow] is called in the customTabView:didSelectTabViewItem:
 }
 
 - (void) reloadListItem:(id <JVChatListItem>) item andChildren:(BOOL) children {
-	if( item == _activeViewController ) {
+	if( item == self.activeChatViewController ) {
 		[customTabsView resizeTabForTabViewItem:[tabView selectedTabViewItem]];
-		[self _refreshList];
-		[self _refreshWindowTitle];
-	} else if( [_views containsObject:item] ) {
-		[customTabsView resizeTabForTabViewItem:[tabView tabViewItemAtIndex:[_views indexOfObjectIdenticalTo:item]]];
+		[self reloadList];
+		[self refreshWindowTitle];
+	} else if( [self.allChatViewControllers containsObject:item] ) {
+		[customTabsView resizeTabForTabViewItem:[tabView tabViewItemAtIndex:[self.allChatViewControllers indexOfObjectIdenticalTo:item]]];
 	} else {
 		id selectItem = [self selectedListItem];
 
@@ -127,15 +128,15 @@
 - (IBAction) openViewsDrawer:(id) sender {
 	[super openViewsDrawer:sender];
 
-	if( [_activeViewController respondsToSelector:@selector( setPreference:forKey: )] )
-		[(id)_activeViewController setPreference:[NSNumber numberWithBool:YES] forKey:@"expanded"];
+	if( [self.activeChatViewController respondsToSelector:@selector( setPreference:forKey: )] )
+		[(id)self.activeChatViewController setPreference:[NSNumber numberWithBool:YES] forKey:@"expanded"];
 }
 
 - (IBAction) closeViewsDrawer:(id) sender {
 	[super closeViewsDrawer:sender];
 
-	if( [_activeViewController respondsToSelector:@selector( setPreference:forKey: )] )
-		[(id)_activeViewController setPreference:[NSNumber numberWithBool:NO] forKey:@"expanded"];
+	if( [self.activeChatViewController respondsToSelector:@selector( setPreference:forKey: )] )
+		[(id)self.activeChatViewController setPreference:[NSNumber numberWithBool:NO] forKey:@"expanded"];
 }
 
 #pragma mark -
@@ -143,18 +144,18 @@
 - (id <JVInspection>) objectToInspect {
 	if( [chatViewsOutlineView numberOfSelectedRows] && [[chatViewsOutlineView window] firstResponder] == chatViewsOutlineView )
 		return [super objectToInspect];
-	else if( [_activeViewController conformsToProtocol:@protocol( JVInspection )] )
-		return (id <JVInspection>)_activeViewController;
+	else if( [self.activeChatViewController conformsToProtocol:@protocol( JVInspection )] )
+		return (id <JVInspection>)self.activeChatViewController;
 	return nil;
 }
 
 - (IBAction) getInfo:(id) sender {
 	if( [chatViewsOutlineView numberOfSelectedRows] && [[chatViewsOutlineView window] firstResponder] == chatViewsOutlineView ) {
 		[super getInfo:sender];
-	} else if( [_activeViewController conformsToProtocol:@protocol( JVInspection )] ) {
+	} else if( [self.activeChatViewController conformsToProtocol:@protocol( JVInspection )] ) {
 		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask )
-			[JVInspectorController showInspector:_activeViewController];
-		else [[JVInspectorController inspectorOfObject:(id <JVInspection>)_activeViewController] show:sender];
+			[JVInspectorController showInspector:self.activeChatViewController];
+		else [[JVInspectorController inspectorOfObject:(id <JVInspection>)self.activeChatViewController] show:sender];
 	}
 }
 
@@ -173,7 +174,7 @@
 		return YES;
 	} else if( [menuItem action] == @selector( getInfo: ) ) {
 		if( [chatViewsOutlineView numberOfSelectedRows] && [[chatViewsOutlineView window] firstResponder] == chatViewsOutlineView ) return [super validateMenuItem:menuItem];
-		else if( [_activeViewController conformsToProtocol:@protocol( JVInspection )] ) return YES;
+		else if( [self.activeChatViewController conformsToProtocol:@protocol( JVInspection )] ) return YES;
 		else return NO;
 	}
 	return [super validateMenuItem:menuItem];
@@ -183,8 +184,8 @@
 
 - (void) customTabView:(AICustomTabsView *) view didSelectTabViewItem:(NSTabViewItem *) tabViewItem {
 	if( tabViewItem ) {
-		[self _refreshWindow];
-		[self _refreshList];
+		//[self _refreshWindow];
+		[self reloadList];
 		[self _deferRefreshSelectionMenu];
 
 		id controller = [(JVChatTabItem *)tabViewItem chatViewController];
@@ -201,10 +202,13 @@
 }
 
 - (void) customTabViewDidChangeOrderOfTabViewItems:(AICustomTabsView *) view {
-	[_views removeAllObjects];
+	NSMutableArray * newViews = [NSMutableArray array];
 
-	for( JVChatTabItem *tab in [tabView tabViewItems] )
-		[_views addObject:[tab chatViewController]];
+	for( JVChatTabItem *tab in [tabView tabViewItems] ) {
+		[newViews addObject:[tab chatViewController]];
+	}
+	
+	[self reorderChatViewControllers:newViews];
 }
 
 - (void) customTabView:(AICustomTabsView *) view closeTabViewItem:(NSTabViewItem *) tabViewItem {
@@ -255,7 +259,7 @@
 
 - (NSMenu *) customTabView:(AICustomTabsView *) view menuForTabViewItem:(NSTabViewItem *) tabViewItem {
 	if( [[(JVChatTabItem *)tabViewItem chatViewController] respondsToSelector:@selector( menu )] ) {
-		[[self window] makeFirstResponder:[[_activeViewController view] nextKeyView]];
+		[[self window] makeFirstResponder:[[self.activeChatViewController view] nextKeyView]];
 		id object = [(JVChatTabItem *)tabViewItem chatViewController];
 		NSMenu *menu = [object menu];
 
@@ -291,7 +295,7 @@
 
 - (NSString *) customTabView:(AICustomTabsView *) view toolTipForTabViewItem:(NSTabViewItem *) tabViewItem {
 	if( [[(JVChatTabItem *)tabViewItem chatViewController] respondsToSelector:@selector( toolTip )] )
-		return [(NSObject *)[(JVChatTabItem *)tabViewItem chatViewController] toolTip];
+		return [[(JVChatTabItem *)tabViewItem chatViewController] toolTip];
 	return nil;
 }
 
@@ -306,8 +310,8 @@
 	BOOL accepted = NO;
 
 	for( id file in files ) {
-		if( [(NSObject *)[(JVChatTabItem *)tabViewItem chatViewController] acceptsDraggedFileOfType:[file pathExtension]] ) {
-			[(NSObject *)[(JVChatTabItem *)tabViewItem chatViewController] handleDraggedFile:file];
+		if( [[(JVChatTabItem *)tabViewItem chatViewController] acceptsDraggedFileOfType:[file pathExtension]] ) {
+			[[(JVChatTabItem *)tabViewItem chatViewController] handleDraggedFile:file];
 			accepted = YES;
 		}
 	}
@@ -319,7 +323,7 @@
 
 - (NSInteger) outlineView:(NSOutlineView *) outlineView numberOfChildrenOfItem:(id) item {
 	if( item && [item respondsToSelector:@selector( numberOfChildren )] ) return [item numberOfChildren];
-	else if( [_activeViewController respondsToSelector:@selector( numberOfChildren )] ) return [(id)_activeViewController numberOfChildren];
+	else if( [self.activeChatViewController respondsToSelector:@selector( numberOfChildren )] ) return [(id)self.activeChatViewController numberOfChildren];
 	else return 0;
 }
 
@@ -330,8 +334,8 @@
 		else return nil;
 	}
 
-	if( [_activeViewController respondsToSelector:@selector( childAtIndex: )] )
-		return [(id)_activeViewController childAtIndex:index];
+	if( [self.activeChatViewController respondsToSelector:@selector( childAtIndex: )] )
+		return [(id)self.activeChatViewController childAtIndex:index];
 	return nil;
 }
 
@@ -346,7 +350,7 @@
 }
 
 - (int) outlineView:(NSOutlineView *) outlineView heightOfRow:(int) row {
-	return 16;
+	return ( [outlineView levelForRow:row] || self.usesSmallIcons ? 16 : 34 );
 }
 
 #pragma mark -
@@ -413,8 +417,8 @@
 #pragma mark -
 
 @implementation JVTabbedChatWindowController (JVTabbedChatWindowControllerPrivate)
-- (void) _claimMenuCommands {
-	[super _claimMenuCommands];
+- (void) claimMenuBarItems {
+	[super claimMenuBarItems];
 
 	unichar left = NSLeftArrowFunctionKey;
 	unichar right = NSRightArrowFunctionKey;
@@ -440,8 +444,8 @@
 	[item setKeyEquivalent:[NSString stringWithCharacters:&right length:1]];
 }
 
-- (void) _resignMenuCommands {
-	[super _resignMenuCommands];
+- (void) resignMenuBarItems {
+	[super resignMenuBarItems];
 
 	unichar up = NSUpArrowFunctionKey;
 	unichar down = NSDownArrowFunctionKey;
@@ -508,39 +512,30 @@
 	return ( tabSize.height == destHeight );
 }
 
-- (void) _refreshWindow {
-	id item = [(JVChatTabItem *)[tabView selectedTabViewItem] chatViewController];
-	if( ! item ) return;
 
-	if( ( [item conformsToProtocol:@protocol( JVChatViewController )] && item != (id) _activeViewController ) || ( ! _activeViewController && [[item parent] conformsToProtocol:@protocol( JVChatViewController )] && ( item = [item parent] ) ) ) {
-		id lastActive = _activeViewController;
-		if( [_activeViewController respondsToSelector:@selector( willUnselect )] )
-			[(NSObject *)_activeViewController willUnselect];
-		if( [item respondsToSelector:@selector( willSelect )] )
-			[(NSObject *)item willSelect];
-
-		_activeViewController = item;
-
-		[[self window] makeFirstResponder:[[_activeViewController view] nextKeyView]];
-
-		[self _refreshToolbar];
-
-		if( [lastActive respondsToSelector:@selector( didUnselect )] )
-			[(NSObject *)lastActive didUnselect];
-		if( [_activeViewController respondsToSelector:@selector( didSelect )] )
-			[(NSObject *)_activeViewController didSelect];
-	} else if( ! [_views count] || ! _activeViewController ) {
-		[[self window] setContentView:[[NSView alloc] initWithFrame:[[[self window] contentView] frame]]];
-		[[[self window] toolbar] setDelegate:nil];
-		[[self window] setToolbar:nil];
-		[[self window] makeFirstResponder:nil];
+- (void)updateInterfaceSwappingOutChatViewController:(id<JVChatViewController>)old
+{
+	if (self.activeChatViewController) {
+		[self.window makeFirstResponder:self.activeChatViewController.view.nextKeyView];
+		[self refreshToolbar];
+	} else {
+		NSView * placeHolderView = [[NSView alloc] initWithFrame:self.window.contentView.frame];
+		self.window.contentView = placeHolderView;
+		self.window.toolbar.delegate = nil;
+		self.window.toolbar = nil;
 	}
-
-	[self _refreshWindowTitle];
+	
+	[self refreshWindowTitle];
 }
 
-- (void) _refreshPreferences {
-	[super _refreshPreferences];
+
+
+// which one is active
+// id item = [(JVChatTabItem *)[tabView selectedTabViewItem] chatViewController];
+
+
+- (void) preferencesDidChange {
+	[super preferencesDidChange];
 
 	_autoHideTabBar = ! [[NSUserDefaults standardUserDefaults] boolForKey:@"JVTabBarAlwaysVisible"];
 	_forceTabBarVisible = ( [self preferenceForKey:@"tab bar visible"] ? [[self preferenceForKey:@"tab bar visible"] intValue] : -1 );

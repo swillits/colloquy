@@ -1,9 +1,16 @@
 #import "JVChatWindowController.h"
+#import "JVChatWindowScripting.h"
 
 @class JVChatRoomPanel;
 @class MVChatConnection;
 @class MVChatUser;
 @class JVBuddy;
+
+
+//! Object is is the room, and userInfo contains the member under the key JVChatRoomMemberKey
+extern NSString * const JVChatRoomMemberInfoDidChangeNotificationName;
+extern NSString * const JVChatRoomMemberKey;
+
 
 @interface JVChatRoomMember : NSObject <JVChatListItem, JVChatListItemScripting> {
 	__weak JVChatRoomPanel *_room;

@@ -1,8 +1,18 @@
-#import "JVChatWindowController.h"
+#import "JVClassicChatWindowController.h"
 
 @class AICustomTabsView;
 
-@interface JVTabbedChatWindowController : JVChatWindowController {
+
+/*
+ 
+ 
+ 		Should just be deleted and completely rewritten.
+ 		No drawer, modern tabs...
+ 
+ 
+ */
+
+@interface JVTabbedChatWindowController : JVClassicChatWindowController {
 	IBOutlet AICustomTabsView *customTabsView;
 	IBOutlet NSTabView *tabView;
 	NSMutableArray *_tabItems;

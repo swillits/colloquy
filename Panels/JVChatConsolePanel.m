@@ -553,6 +553,6 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 }
 
 - (void) _refreshIcon:(NSNotification *) notification {
-	[_windowController reloadListItem:self andChildren:NO];
+	[NSNotificationCenter.defaultCenter postNotificationName:JVChatViewControllerInfoDidChangeNotificationName object:self userInfo:nil];
 }
 @end
