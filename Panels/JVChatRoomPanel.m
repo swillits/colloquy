@@ -157,8 +157,13 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 #pragma mark -
 
++ (NSSet *)keyPathsForValuesAffectingIcon
+{
+	return [NSSet setWithObject:@"customImage"];
+}
+
 - (NSImage *) icon {
-	return [NSImage imageNamed:@"room"];
+	return self.customIcon ?: [NSImage imageNamed:@"room"];
 }
 
 - (NSImage *) statusImage {
@@ -279,6 +284,45 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 	return [super validateMenuItem: menuItem];
 }
 
+
+
+	
+#pragma mark -
+#pragma mark Custom Room Image
+
+- (void)setCustomIcon:(NSImage *)customImage
+{
+	_customIcon = nil;
+	
+	if (customImage) {
+		CGImageRef cgImage = [customImage CGImageForProposedRect:nil context:nil hints:nil];
+		NSBitmapImageRep * rep = [[NSBitmapImageRep alloc] initWithCGImage:cgImage];
+		rep.size = NSMakeSize(64, 6);
+		NSData * pngData = [rep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+		if (pngData) {
+			[self setPreference:pngData forKey:@"customIcon"];
+		}
+	} else {
+		[self setPreference:nil forKey:@"customIcon"];
+	}
+}
+
+
+- (NSImage *)customIcon
+{
+	if (!_customIcon) {
+		NSData * data = [self preferenceForKey:@"customIcon"];
+		if (data) {
+			_customIcon = [[NSImage alloc] initWithData:data];
+		}
+	}
+	return _customIcon;
+}
+
+
+
+
+
 #pragma mark -
 #pragma mark Miscellaneous
 
@@ -346,7 +390,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 		if( [self newMessagesWaiting] == 1 ) [context setObject:[NSString stringWithFormat:NSLocalizedString( @"%@ has a message waiting\nfrom %@.", "new single room message bubble text" ), [self title], [member displayName]] forKey:@"title"];
 		else [context setObject:[NSString stringWithFormat:NSLocalizedString( @"%@ has %d messages waiting.\nLast from %@", "new room messages bubble text" ), [self title], [self newMessagesWaiting], [member displayName]] forKey:@"title"];
 		[context setObject:[NSString stringWithFormat:NSLocalizedString( @"%@", "room activity bubble message" ), [message bodyAsPlainText]] forKey:@"description"];
-		[context setObject:[NSImage imageNamed:@"room"] forKey:@"image"];
+		[context setObject:self.icon forKey:@"image"];
 		[context setObject:[[self windowTitle] stringByAppendingString:@"JVChatRoomActivity"] forKey:@"coalesceKey"];
 		[context setObject:self forKey:@"target"];
 		[context setObject:NSStringFromSelector( @selector( activate: ) ) forKey:@"action"];
@@ -1593,3 +1637,55 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 	return [[NSUniqueIDSpecifier alloc] initWithContainerClassDescription:classDescription containerSpecifier:container key:@"chatMembers" uniqueID:[self uniqueIdentifier]];
 }
 @end
+
+
+
+
+//
+//@interface JVChatRoomImageCache : NSObject
+//{
+//	NSMutableDictionary * _cache;
+//}
+//
+//
+//+ (instancetype)sharedInstance
+//{
+//	static JVChatRoomImageCache * shared = nil;
+//	static dispatch_once_t token;
+//	dispatch_once(&token, ^{
+//		shared = [[JVChatRoomImageCache alloc] init];
+//	});
+//}
+//
+//
+//
+//- (void)load
+//{
+//	NSString * path = [@"~/Library/Application Support/Colloquy/.plist" stringByExpandingTildeInPath];
+//}
+//
+//
+//- (void)setImage:(NSImage * /* _Nullable */)image forRoom:(NSString *)name
+//{
+//	@synchronized(self) {
+//		// Scale down to size?
+//		// Save
+//		
+//		
+//	}
+//}
+//
+//
+//- (NSImage * /* _Nullable */)imageForRoom:(NSString *)name
+//{
+//	@synchronized(self) {
+//		return nil;
+//	}
+//}
+//
+//
+//
+//@end
+//
+//
+//
