@@ -30,7 +30,6 @@ COLLOQUY_EXPORT
 	id _target;
 	NSStringEncoding _encoding;
 	NSMenu *_encodingMenu;
-	NSMutableArray *_sendHistory;
 	NSMutableArray<NSDictionary <NSString *, id>*> *_waitingAlerts;
 	NSMutableDictionary *_settings;
 	NSMenu *_spillEncodingMenu;

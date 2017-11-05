@@ -10,6 +10,7 @@
 @class MVTextView;
 @class CQSendHistory;
 @class MVChatConnection;
+@protocol CQSendCompletionHandler;
 @protocol CQSendViewDelegate;
 @protocol JVChatViewController;
 NS_ASSUME_NONNULL_BEGIN
@@ -19,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CQSendViewController : NSViewController
 
 @property (readwrite, weak) IBOutlet id<CQSendViewDelegate> delegate;
-//@property (readwrite, retain) CQSendCompletionHandler * completionHandler;
+@property (readwrite, retain) id<CQSendCompletionHandler> completionHandler;
 @property (readonly) CQSendHistory * history;
 
 
@@ -60,6 +61,9 @@ typedef NS_OPTIONS(NSUInteger, CQSendViewOptions) {
 @optional
 - (void)sendView:(CQSendViewController *)sendView sendCommand:(NSString *)command withArguments:(NSAttributedString * _Nullable)arguments;
 - (void)sendView:(CQSendViewController *)sendView sendMessage:(NSAttributedString *)message asAction:(BOOL)asAction;
+
+//! Page Up, Page Down, Home, Begin, End was pressed.
+- (void)sendView:(CQSendViewController *)sendView navigationKeyPressed:(NSEvent *)event;
 @end
 
 

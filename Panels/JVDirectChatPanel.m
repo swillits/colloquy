@@ -30,6 +30,7 @@
 #import <ChatCore/NSRegularExpressionAdditions.h>
 #import "CQSendView.h"
 #import "CQSendHistory.h"
+#import "CQSendCompletion.h"
 
 static NSSet *actionVerbs = nil;
 
@@ -113,6 +114,7 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		
 		sendViewController = [[CQSendViewController alloc] init];
 		sendViewController.delegate = self;
+		sendViewController.completionHandler = [[CQChatSendCompletionHandler alloc] initWithChat:self];
 		
 		_target = nil;
 		_firstMessage = YES;
@@ -128,9 +130,6 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 		_encoding = NSASCIIStringEncoding;
 		_encodingMenu = nil;
 		_spillEncodingMenu = nil;
-
-		_sendHistory = [NSMutableArray arrayWithCapacity:30];
-		[_sendHistory insertObject:[[NSAttributedString alloc] initWithString:@""] atIndex:0];
 
 		_waitingAlerts = [NSMutableArray array];
 	}
@@ -954,15 +953,9 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 #pragma mark -
 #pragma mark History manipulation
 
+// Should this exist? When does history need to be modified by anything but the send view controller itself?
 - (void) addMessageToHistory:(NSAttributedString *) message {
 	[sendViewController.history addToHistory:message];
-	
-//	if( ! [message length] ) return;
-//	if( [_sendHistory count] )
-//		[_sendHistory replaceObjectAtIndex:0 withObject:[[NSAttributedString alloc] initWithString:@""]];
-//	[_sendHistory insertObject:[message copy] atIndex:1];
-//	if( [_sendHistory count] > [[[NSUserDefaults standardUserDefaults] objectForKey:@"JVChatMaximumHistory"] unsignedIntValue] )
-//		[_sendHistory removeObjectAtIndex:[_sendHistory count] - 1];	
 }
 
 #pragma mark -

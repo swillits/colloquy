@@ -14,6 +14,7 @@
 #import "MVChatUserAdditions.h"
 #import "MVApplicationController.h"
 #import "CQSendView.h"
+#import "CQSendCompletion.h"
 
 NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdateNotification";
 
@@ -38,6 +39,8 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 - (void) _didClearDisplay:(NSNotification *) notification;
 
 - (NSInteger) _roomIndexInFavoritesMenu;
+
+- (CQChatSendCompletionHandler *)_sendCompletionHandler;
 @end
 
 #pragma mark -
@@ -45,8 +48,8 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 @implementation JVChatRoomPanel
 - (id) initWithTarget:(id) target {
 	if( ( self = [super initWithTarget:target] ) ) {
+		
 		_sortedMembers = [[NSMutableArray alloc] initWithCapacity:100];
-		_preferredTabCompleteNicknames = [[NSMutableArray alloc] initWithCapacity:10];
 		_nextMessageAlertMembers = [[NSMutableSet alloc] initWithCapacity:5];
 		_cantSendMessages = YES;
 		_kickedFromRoom = NO;
@@ -91,7 +94,6 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 
 	_sortedMembers = nil;
-	_preferredTabCompleteNicknames = nil;
 	_nextMessageAlertMembers = nil;
 
 }
@@ -337,8 +339,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 	if( member ) [message setSender:member];
 
 	if( [message isHighlighted] && [message ignoreStatus] == JVNotIgnored ) {
-		[_preferredTabCompleteNicknames removeObject:[[message sender] nickname]];
-		[_preferredTabCompleteNicknames insertObject:[[message sender] nickname] atIndex:0];
+		[self._sendCompletionHandler pushPreferredNickname:[message.sender nickname]];
 	}
 
 	if( [message ignoreStatus] == JVNotIgnored && [[message sender] respondsToSelector:@selector( isLocalUser )] && ! [[message sender] isLocalUser] ) {
@@ -410,9 +411,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	[_sortedMembers makeObjectsPerformSelector:@selector( _detach )];
 	[_sortedMembers removeAllObjects];
-
-	[_preferredTabCompleteNicknames removeAllObjects];
-
+	[self._sendCompletionHandler removeAllPreferredNicknames];
 	[_nextMessageAlertMembers makeObjectsPerformSelector:@selector( _detach )];
 	[_nextMessageAlertMembers removeAllObjects];
 
@@ -895,9 +894,8 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	NSString *oldNickname = [[notification userInfo] objectForKey:@"oldNickname"];
 
-	NSUInteger index = [_preferredTabCompleteNicknames indexOfObject:oldNickname];
-	if( index != NSNotFound ) [_preferredTabCompleteNicknames replaceObjectAtIndex:index withObject:[member nickname]];
-
+	[self._sendCompletionHandler replacePreferredNickname:oldNickname with:member.nickname];
+	
 	[self addEventMessageToDisplay:[NSString stringWithFormat:NSLocalizedString( @"%@ is now known as <span class=\"member\">%@</span>.", "user has changed nicknames" ), [oldNickname stringByEncodingXMLSpecialCharactersAsEntities], [[member nickname] stringByEncodingXMLSpecialCharactersAsEntities]] withName:@"memberNewNickname" andAttributes:[NSDictionary dictionaryWithObjectsAndKeys:oldNickname, @"old", member, @"who", nil]];
 }
 
@@ -966,7 +964,8 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	[member _detach];
 
-	[_preferredTabCompleteNicknames removeObject:[member nickname]];
+	
+	[self._sendCompletionHandler removePreferredNickname:member.nickname];
 	[_sortedMembers removeObjectIdenticalTo:member];
 	[_nextMessageAlertMembers removeObject:member];
 	[_windowController reloadListItem:self andChildren:YES];
@@ -1037,7 +1036,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	[member _detach];
 
-	[_preferredTabCompleteNicknames removeObject:[member nickname]];
+	[self._sendCompletionHandler removePreferredNickname:member.nickname];
 	[_sortedMembers removeObjectIdenticalTo:member];
 	[_nextMessageAlertMembers removeObject:member];
 	[_windowController reloadListItem:self andChildren:YES];
@@ -1091,7 +1090,7 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	[member _detach];
 
-	[_preferredTabCompleteNicknames removeObject:[member nickname]];
+	[self._sendCompletionHandler removePreferredNickname:member.nickname];
 	[_sortedMembers removeObjectIdenticalTo:member];
 	[_nextMessageAlertMembers removeObject:member];
 	[_windowController reloadListItem:self andChildren:YES];
@@ -1484,6 +1483,13 @@ NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdat
 
 	return NSNotFound;
 }
+
+
+- (CQChatSendCompletionHandler *)_sendCompletionHandler
+{
+	return (CQChatSendCompletionHandler *)sendViewController.completionHandler;
+}
+
 @end
 
 #pragma mark -

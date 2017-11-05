@@ -11,7 +11,7 @@
 #import "CQInlineEmoticonButton.h"
 #import "CQSendHistory.h"
 #import "CQSendStringCommandParser.h"
-#import "JVChatMessage.h"
+#import "CQSendCompletion.h"
 
 
 
@@ -263,16 +263,21 @@
 
 - (NSArray *)textView:(NSTextView *)textView stringCompletionsForPrefix:(NSString *)prefix
 {
-	// TODO-SW: See CQSendCompletion
-	return nil;
+	return [self.completionHandler textView:textView stringCompletionsForPrefix:prefix];
 }
 	
 	
-- (NSArray *) textView:(NSTextView *) textView completions:(NSArray *) words forPartialWordRange:(NSRange) charRange indexOfSelectedItem:(NSInteger *) index
+- (NSArray *)textView:(NSTextView *)textView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index
 {
-	// TODO-SW: See CQSendCompletion
-	return nil;
+	return [self.completionHandler textView:textView completions:words forPartialWordRange:charRange indexOfSelectedItem:index];
 }
+
+
+- (void)textView:(NSTextView *)textView selectedCompletion:(NSString *)completion fromPrefix:(NSString *)prefix
+{
+	[self.completionHandler textView:textView selectedCompletion:completion fromPrefix:prefix];
+}
+
 
 
 
