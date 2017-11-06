@@ -9,12 +9,14 @@
 #import "CQStreamlinedChatWindowController.h"
 #import "JVChatRoomPanel.h"
 #import "JVChatRoomMember.h"
+#import "MVApplicationController.h"
 
 
 
 @implementation CQStreamlinedChatWindowController
 {
 	IBOutlet NSView * containerView;
+	IBOutlet NSMenu * actionMenu;
 }
 
 
@@ -128,6 +130,58 @@
 #pragma mark -
 #pragma mark 
 
+- (void)menuNeedsUpdate:(NSMenu *)menu
+{
+	if (menu == actionMenu) {
+		while (actionMenu.itemArray.count > 1) {
+			[actionMenu removeItemAtIndex:1];
+		}
+		
+		if (!self.activeChatViewController) {
+			return;
+		}
+		
+		
+		NSMenu * chatMenu = self.activeChatViewController.menu;
+		
+		for (NSMenuItem * menuItem in chatMenu.itemArray) {
+			[chatMenu removeItem:menuItem];
+			[menu addItem:menuItem];
+		}
+		
+		
+		NSMethodSignature *signature = [NSMethodSignature methodSignatureWithReturnAndArgumentTypes:@encode( NSArray * ), @encode( id ), @encode( id ), nil];
+		NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+		id view = self.activeChatViewController;
+		
+		[invocation setSelector:@selector( contextualMenuItemsForObject:inView: )];
+		MVAddUnsafeUnretainedAddress(view, 2)
+		MVAddUnsafeUnretainedAddress(view, 3)
+		
+		NSArray *results = [[MVChatPluginManager defaultManager] makePluginsPerformInvocation:invocation];
+		if( [results count] ) {
+			if( [menu numberOfItems ] && ! [[[menu itemArray] lastObject] isSeparatorItem] )
+				[menu addItem:[NSMenuItem separatorItem]];
+			
+			NSArray *items = nil;
+			for( items in results ) {
+				if( ![items conformsToProtocol:@protocol(NSFastEnumeration)] ) {
+					continue;
+				}
+				
+				for (NSMenuItem * menuItem in items) {
+					if( [menuItem isKindOfClass:[NSMenuItem class]] ) {
+						[menu addItem:menuItem];
+					}
+				}
+			}
+			
+			if( [[[menu itemArray] lastObject] isSeparatorItem] ) {
+				[menu removeItem:[[menu itemArray] lastObject]];
+			}
+		}
+	}
+}
 
 
 

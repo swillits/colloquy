@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CQStreamlinedChatWindowController">
             <connections>
+                <outlet property="actionMenu" destination="vsa-qR-kmv" id="N2G-Nk-GnU"/>
                 <outlet property="containerView" destination="D3i-wx-LQy" id="45z-hE-8Z3"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="aJY-Yt-wvy"/>
             </connections>
@@ -77,18 +78,28 @@
                             </connections>
                         </button>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="73450FA0-AF9F-4AD4-BE0B-1C90A8A7F751" label="Action" paletteLabel="Action" image="actionMenuGlyph" id="PU9-N7-YgT">
+                    <toolbarItem implicitItemIdentifier="DA855688-3DAB-475E-A1FF-6F2D53694BBE" explicitItemIdentifier="Action" label="Action" paletteLabel="Action" image="NSActionTemplate" id="Pex-r7-sGV">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="40" height="25"/>
-                        <size key="maxSize" width="40" height="25"/>
-                        <button key="view" verticalHuggingPriority="750" id="9DY-n4-6fx">
-                            <rect key="frame" x="1" y="14" width="40" height="25"/>
+                        <size key="minSize" width="40" height="28"/>
+                        <size key="maxSize" width="40" height="28"/>
+                        <popUpButton key="view" verticalHuggingPriority="750" id="Asc-RH-rQw">
+                            <rect key="frame" x="1" y="14" width="40" height="28"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="actionMenuGlyph" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GPl-ih-h2d">
+                            <popUpButtonCell key="cell" type="roundTextured" title="Item 1" bezelStyle="texturedRounded" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" selectedItem="XRU-mE-oJw" id="Bpi-rR-xuj">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                        </button>
+                                <font key="font" metaFont="menu"/>
+                                <menu key="menu" id="vsa-qR-kmv">
+                                    <items>
+                                        <menuItem title="Item 1" state="on" image="NSActionTemplate" hidden="YES" id="XRU-mE-oJw"/>
+                                        <menuItem title="Item 2" id="IW7-NP-bTu"/>
+                                        <menuItem title="Item 3" id="upd-D5-5fp"/>
+                                    </items>
+                                    <connections>
+                                        <outlet property="delegate" destination="-2" id="iqt-X1-c8G"/>
+                                    </connections>
+                                </menu>
+                            </popUpButtonCell>
+                        </popUpButton>
                     </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
@@ -96,14 +107,14 @@
                     <toolbarItem reference="d2G-Lz-Qqt"/>
                     <toolbarItem reference="nLd-b8-D4w"/>
                     <toolbarItem reference="jKa-j7-0rA"/>
-                    <toolbarItem reference="PU9-N7-YgT"/>
+                    <toolbarItem reference="Pex-r7-sGV"/>
                 </defaultToolbarItems>
             </toolbar>
             <point key="canvasLocation" x="99" y="63"/>
         </window>
     </objects>
     <resources>
-        <image name="actionMenuGlyph" width="22" height="12"/>
+        <image name="NSActionTemplate" width="14" height="14"/>
         <image name="clearGlyph" width="14" height="13"/>
         <image name="markGlyph" width="9" height="11"/>
     </resources>
