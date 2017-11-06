@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readwrite, retain) id<CQSendCompletionHandler> completionHandler;
 @property (readonly) CQSendHistory * history;
 
+@property (readwrite) CGFloat minimumHeight;
 
 @property (readwrite, copy, null_resettable) NSAttributedString * stringToSend;
 @property (readonly) BOOL stringToSendIsACommand;

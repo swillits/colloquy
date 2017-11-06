@@ -66,6 +66,13 @@
 		[super resetCursorRects];
 }
 
+
+- (NSColor *)dividerColor
+{
+	return [NSColor colorWithWhite:0.65 alpha:1.0];
+}
+
+
 //- (CGFloat) dividerThickness {
 //	if( ! [self isVertical] ) return 10.;
 //	return [super dividerThickness];

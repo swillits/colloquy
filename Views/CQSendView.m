@@ -36,6 +36,7 @@
 	}
 	
 	_history = [[CQSendHistory alloc] init];
+	_minimumHeight = 22.0;
 	
 	return self;
 }
@@ -153,7 +154,6 @@
 	// 
 	
 	const CGFloat MIN_HEIGHT_FOR_TRANSCRIPT_AREA = 75.0;
-	const CGFloat MIN_HEIGHT_FOR_SEND_AREA = 22.0;
 	NSSplitView * splitView = (NSSplitView *)self.view.superview;
 	
 	NSRect splitViewFrame = splitView.frame;
@@ -161,7 +161,7 @@
 	NSSize contentSize = _sendTextView.minimumSizeForContent;
 	CGFloat dividerThickness = splitView.dividerThickness;
 	CGFloat maxContentHeight = (NSHeight(splitViewFrame) - dividerThickness - MIN_HEIGHT_FOR_TRANSCRIPT_AREA);
-	CGFloat newSendViewHeight = MIN(maxContentHeight, MAX(MIN_HEIGHT_FOR_SEND_AREA, contentSize.height + 8.0));
+	CGFloat newSendViewHeight = MIN(maxContentHeight, MAX(_minimumHeight, contentSize.height + 8.0));
 	
 	// Nothing to change
 	if (newSendViewHeight == NSHeight(sendViewFrame)) {
@@ -477,7 +477,7 @@
 		[NSColor colorWithWhite:0.0 alpha:0.1],
 		[NSColor colorWithWhite:0.0 alpha:0.0]
 	]];
-	[g drawInRect:NSMakeRect(0, 0, self.bounds.size.width, 4.0) angle:90.0];
+	[g drawInRect:NSMakeRect(0, 0, self.bounds.size.width, self.bounds.size.height) angle:90.0];
 }
 
 
