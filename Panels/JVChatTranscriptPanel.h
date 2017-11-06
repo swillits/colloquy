@@ -1,6 +1,7 @@
 #import "JVChatWindowController.h"
 #import "JVChatWindowScripting.h"
 #import <WebKit/WebKit.h>
+#import "JVChatProtocols.h"
 
 @class JVStyleView;
 @class MVMenuButton;

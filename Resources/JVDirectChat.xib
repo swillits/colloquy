@@ -21,24 +21,34 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="322"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <splitView id="106" customClass="JVSplitView">
+                <splitView dividerStyle="thin" id="106" customClass="JVSplitView">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="322"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
-                        <webView maintainsBackForwardList="NO" id="79" customClass="JVStyleView">
-                            <rect key="frame" x="0.0" y="0.0" width="480" height="233"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <webPreferences key="preferences" defaultFontSize="16" defaultFixedFontSize="13" minimumFontSize="6" javaScriptCanOpenWindowsAutomatically="NO">
-                                <nil key="identifier"/>
-                            </webPreferences>
-                            <connections>
-                                <outlet property="UIDelegate" destination="-2" id="85"/>
-                                <outlet property="policyDelegate" destination="-2" id="82"/>
-                            </connections>
-                        </webView>
+                        <customView id="kUn-ms-dIh">
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="175"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <webView misplaced="YES" maintainsBackForwardList="NO" id="79" customClass="JVStyleView">
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="175"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <webPreferences key="preferences" defaultFontSize="16" defaultFixedFontSize="13" minimumFontSize="6" javaScriptCanOpenWindowsAutomatically="NO">
+                                        <nil key="identifier"/>
+                                    </webPreferences>
+                                    <connections>
+                                        <outlet property="UIDelegate" destination="-2" id="85"/>
+                                        <outlet property="policyDelegate" destination="-2" id="82"/>
+                                    </connections>
+                                </webView>
+                                <customView misplaced="YES" id="yVA-Rn-MRv" customClass="CQSendShadowView">
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="10"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                </customView>
+                            </subviews>
+                        </customView>
                         <customView id="0fU-9f-NQy">
-                            <rect key="frame" x="0.0" y="242" width="480" height="80"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <rect key="frame" x="0.0" y="176" width="480" height="146"/>
+                            <autoresizingMask key="autoresizingMask"/>
                         </customView>
                     </subviews>
                     <holdingPriorities>

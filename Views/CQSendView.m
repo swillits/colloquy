@@ -459,3 +459,27 @@
 @end
 
 
+
+
+
+
+@implementation CQSendShadowView
+
+- (BOOL)isOpaque
+{
+	return NO;
+}
+
+
+- (void)drawRect:(NSRect)dirtyRect
+{
+	NSGradient * g = [[NSGradient alloc] initWithColors:@[
+		[NSColor colorWithWhite:0.0 alpha:0.1],
+		[NSColor colorWithWhite:0.0 alpha:0.0]
+	]];
+	[g drawInRect:NSMakeRect(0, 0, self.bounds.size.width, 4.0) angle:90.0];
+}
+
+
+@end
+

@@ -66,16 +66,16 @@
 		[super resetCursorRects];
 }
 
-- (CGFloat) dividerThickness {
-	if( ! [self isVertical] ) return 10.;
-	return [super dividerThickness];
-}
+//- (CGFloat) dividerThickness {
+//	if( ! [self isVertical] ) return 10.;
+//	return [super dividerThickness];
+//}
 
-- (void) drawDividerInRect:(NSRect) rect {
-	if( ! [self isVertical] ) {
-		[[NSImage imageNamed:@"splitviewDividerBackground"] tileInRect:rect];
-		if( [self dividerStyle] != NSSplitViewDividerStylePaneSplitter )
-			[[NSImage imageNamed:@"splitviewDimple"] drawAtPoint:NSMakePoint( ( NSWidth( rect ) / 2. ) - 3., rect.origin.y ) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.];
-	} else [super drawDividerInRect:rect];
-}
+//- (void) drawDividerInRect:(NSRect) rect {
+//	if( ! [self isVertical] ) {
+//		[[NSImage imageNamed:@"splitviewDividerBackground"] tileInRect:rect];
+//		if( [self dividerStyle] != NSSplitViewDividerStylePaneSplitter )
+//			[[NSImage imageNamed:@"splitviewDimple"] drawAtPoint:NSMakePoint( ( NSWidth( rect ) / 2. ) - 3., rect.origin.y ) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.];
+//	} else [super drawDividerInRect:rect];
+//}
 @end

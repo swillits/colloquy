@@ -81,10 +81,6 @@ static NSString *JVToolbarClearItemIdentifier = @"JVToolbarClearItem";
 	[display setImportsGraphics:NO];
 
 	[[display layoutManager] setDelegate:self];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputAutoResizes"] ) {
-		[splitView setDividerStyle:NSSplitViewDividerStylePaneSplitter];
-	}
 }
 
 - (void) dealloc {

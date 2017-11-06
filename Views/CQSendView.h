@@ -72,5 +72,10 @@ typedef NS_OPTIONS(NSUInteger, CQSendViewOptions) {
 
 
 
-NS_ASSUME_NONNULL_END
 
+@interface CQSendShadowView : NSView
+@end
+
+
+
+NS_ASSUME_NONNULL_END

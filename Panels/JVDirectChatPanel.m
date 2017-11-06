@@ -208,10 +208,6 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 	[display setBodyTemplate:@"directChat"];
 
 	[self changeEncoding:nil];
-
-	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"JVChatInputAutoResizes"] ) {
-		[sendDisplaySplitView setDividerStyle:NSSplitViewDividerStylePaneSplitter];
-	}
 }
 
 - (void) dealloc {
@@ -1156,31 +1152,35 @@ NSString *JVChatEventMessageWasProcessedNotification = @"JVChatEventMessageWasPr
 }
 
 - (void) splitView:(NSSplitView *) sender resizeSubviewsWithOldSize:(NSSize) oldSize {
-	float dividerThickness = [sender dividerThickness];
-	NSRect newFrame = [sender frame];
+	CGFloat dividerThickness = [sender dividerThickness];
+	NSSize splitViewSize = sendDisplaySplitView.bounds.size;
 
 	// Keep the size of the send box constant during window resizes
 
 	// We need to resize the scroll view frames of the webview and the textview.
 	// The scroll views are two superviews up: NSTextView(WebView) -> NSClipView -> NSScrollView
+	NSView * topView = [sendDisplaySplitView.subviews objectAtIndex:0];
 	NSRect sendFrame = sendViewController.view.frame;
-	NSRect webFrame = [display frame];
+	NSRect topFrame = topView.frame;
 
 	// Set size of the web view to the maximum size possible
-	webFrame.size.height = NSHeight( newFrame ) - dividerThickness - _sendHeight;
-	webFrame.size.width = NSWidth( newFrame );
-	webFrame.origin = NSMakePoint( 0., 0. );
+	topFrame.size.height = splitViewSize.height - dividerThickness - _sendHeight;
+	topFrame.size.width = splitViewSize.width;
+	topFrame.origin = NSMakePoint( 0., 0. );
 
 	// Keep the send box the same size
 	sendFrame.size.height = _sendHeight;
-	sendFrame.size.width = NSWidth( newFrame );
-	sendFrame.origin.y = NSHeight( webFrame ) + dividerThickness;
-
+	sendFrame.size.width = splitViewSize.width;
+	sendFrame.origin.y = NSHeight( topFrame ) + dividerThickness;
+	
 	// Commit the changes
-	sendFrame.size.width = newFrame.size.width;
+	sendFrame.size.width = splitViewSize.width;
 	sendViewController.view.frame = sendFrame;
-	[display setFrame:webFrame];
+	topView.frame = topFrame;
 }
+
+
+
 
 #pragma mark -
 #pragma mark Toolbar Support
