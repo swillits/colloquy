@@ -19,10 +19,12 @@
 
 @implementation CQStreamlinedRoomSelectorView
 {
+	NSUInteger _clickedIndex;
 	NSUInteger _highlightedIndex;
 	NSMutableDictionary * _tooltips;
 	CQChatRoomMembersPopover * _popover;
 	NSTimer * _mouseDownTimer;
+	BOOL _ignoreMouse;
 }
 
 
@@ -48,6 +50,7 @@
 - (void)sharedInit
 {
 	_highlightedIndex = NSNotFound;
+	_clickedIndex = NSNotFound;
 	_tooltips = [[NSMutableDictionary alloc] init];
 	
 	_popover = [[CQChatRoomMembersPopover alloc] init];
@@ -69,7 +72,6 @@
 - (void)viewDidMoveToWindow
 {
 	NSWindowController * wc = self.window.windowController;
-	_highlightedIndex = NSNotFound;
 	
 	if ([wc isKindOfClass:[JVChatWindowController class]]) {
 		self.chatWindowController = (JVChatWindowController *)wc;
@@ -178,19 +180,18 @@
 	NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
 	
 	_highlightedIndex = NSNotFound;
+	_clickedIndex = NSNotFound;
 	
 	[self.chatWindowController.allChatViewControllers enumerateObjectsUsingBlock:^(id<JVChatViewController>  _Nonnull chat, NSUInteger idx, BOOL * _Nonnull stop) {
 		NSRect rect = RECT_FOR_CHAT_AT_INDEX(idx);
 		
 		if (NSPointInRect(point, rect)) {
 			_highlightedIndex = idx;
+			_clickedIndex = idx;
 			
 			if ([chat isKindOfClass:[JVChatRoomPanel class]]) {
 				_mouseDownTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 repeats:NO block:^(NSTimer * _Nonnull timer) {
-					_popover.contentViewController.room = (JVChatRoomPanel *)chat;
-					_popover.contentSize = _popover.contentViewController.fittingSize;
-					[_popover showRelativeToRect:rect ofView:self preferredEdge:NSMinYEdge];
-					_mouseDownTimer = nil;
+					[self displayPopoverForChat:(JVChatRoomPanel *)chat inRect:rect];
 				}];
 			}
 			
@@ -204,21 +205,31 @@
 
 - (void)mouseDragged:(NSEvent *)event
 {
-	NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
-	
 	[_mouseDownTimer invalidate];
 	_mouseDownTimer = nil;
 	
 	_highlightedIndex = NSNotFound;
 	
-	[self.chatWindowController.allChatViewControllers enumerateObjectsUsingBlock:^(id<JVChatViewController>  _Nonnull chat, NSUInteger idx, BOOL * _Nonnull stop) {
-		NSRect rect = RECT_FOR_CHAT_AT_INDEX(idx);
+	if (!_ignoreMouse) {
+		NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
 		
-		if (NSPointInRect(point, rect)) {
-			_highlightedIndex = idx;
-			*stop = YES;
-		}
-	}];
+		[self.chatWindowController.allChatViewControllers enumerateObjectsUsingBlock:^(id<JVChatViewController>  _Nonnull chat, NSUInteger idx, BOOL * _Nonnull stop) {
+			NSRect rect = RECT_FOR_CHAT_AT_INDEX(idx);
+			
+			if (NSPointInRect(point, rect)) {
+				if ([chat isKindOfClass:[JVChatRoomPanel class]]) {
+					[self displayPopoverForChat:(JVChatRoomPanel *)chat inRect:rect];
+				}
+				
+				_highlightedIndex = idx;
+				*stop = YES;
+			}
+		}];
+	}
+	
+	if (_clickedIndex != NSNotFound && _highlightedIndex != _clickedIndex) {
+		_highlightedIndex = NSNotFound;
+	}
 	
 	[self setNeedsDisplay:YES];
 }
@@ -226,20 +237,22 @@
 
 - (void)mouseUp:(NSEvent *)event
 {
-	NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
-	
-	[self.chatWindowController.allChatViewControllers enumerateObjectsUsingBlock:^(id<JVChatViewController>  _Nonnull chat, NSUInteger idx, BOOL * _Nonnull stop) {
-		NSRect rect = RECT_FOR_CHAT_AT_INDEX(idx);
-		if (NSPointInRect(point, rect)) {
-			[self.chatWindowController showChatViewController:chat];
-			*stop = YES;
-		}
-	}];
-	
+	if (!_ignoreMouse) {
+		NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
+		
+		[self.chatWindowController.allChatViewControllers enumerateObjectsUsingBlock:^(id<JVChatViewController>  _Nonnull chat, NSUInteger idx, BOOL * _Nonnull stop) {
+			NSRect rect = RECT_FOR_CHAT_AT_INDEX(idx);
+			if (NSPointInRect(point, rect) && _clickedIndex == idx) {
+				[self.chatWindowController showChatViewController:chat];
+				*stop = YES;
+			}
+		}];
+	}
 	
 	[_mouseDownTimer invalidate];
 	_mouseDownTimer = nil;
 	
+	_ignoreMouse = NO;
 	_highlightedIndex = NSNotFound;
 	[self setNeedsDisplay:YES];
 }
@@ -251,6 +264,19 @@
 	
 }
 
+
+
+- (void)displayPopoverForChat:(JVChatRoomPanel *)chat inRect:(NSRect)rect
+{
+	_popover.contentViewController.room = chat;
+	_popover.contentSize = _popover.contentViewController.fittingSize;
+	[_popover showRelativeToRect:rect ofView:self preferredEdge:NSMinYEdge];
+	
+	[_mouseDownTimer invalidate];
+	_mouseDownTimer = nil;
+	
+	_ignoreMouse = YES;
+}
 
 
 
