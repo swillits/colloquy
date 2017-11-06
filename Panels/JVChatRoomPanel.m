@@ -15,6 +15,7 @@
 #import "MVApplicationController.h"
 #import "CQSendView.h"
 #import "CQSendCompletion.h"
+#import "CQRoomIconGenerator.h"
 
 NSString *const MVFavoritesListDidUpdateNotification = @"MVFavoritesListDidUpdateNotification";
 NSString *const JVChatRoomPanelMembersDidChangeNotification = @"JVChatRoomPanelMembersDidChangeNotification";
@@ -168,166 +169,43 @@ NSString *const JVChatRoomPanelMembersDidChangeNotification = @"JVChatRoomPanelM
 	return [NSSet setWithObject:@"customIcon"];
 }
 
-- (NSImage *) icon {
-	NSImage * image = self.customIcon;
-	if (image) return image;
-	
-	
-	/// This is all a big mess to generate a uniquely colored image with an abbreviation of the room name 
-	{
+
+- (NSImage *)uniqueIcon
+{
+	/// Generate a uniquely colored image with an abbreviation of the room name 
+	if (!_uniqueIcon) {
 		NSColor * uniqueColor = nil;
-		
-		if (!uniqueColor) {
-			NSData * uniqueColorData = nil;//[self preferenceForKey:@"uniqueColor"];
-			if (uniqueColorData) {
-				uniqueColor = [NSUnarchiver unarchiveObjectWithData:uniqueColorData];
-			} else {
-				
-				static NSArray * colors = nil;
-				
-				static dispatch_once_t onceToken;
-				dispatch_once(&onceToken, ^{
-					srand48((long)(NSDate.timeIntervalSinceReferenceDate) << 8);
-					colors = @[
-						[NSColor colorWithHue:(224.0 / 360.0)  saturation:( 50.0  / 100.0)  brightness:( 63.0 / 100.0)  alpha:1.0],  // flatBlueColor
-						[NSColor colorWithHue:( 24.0 / 360.0)  saturation:( 45.0  / 100.0)  brightness:( 37.0 / 100.0)  alpha:1.0],  // flatBrownColor
-						[NSColor colorWithHue:( 25.0 / 360.0)  saturation:( 31.0  / 100.0)  brightness:( 64.0 / 100.0)  alpha:1.0],  // flatCoffeeColor
-						[NSColor colorWithHue:(138.0 / 360.0)  saturation:( 45.0  / 100.0)  brightness:( 37.0 / 100.0)  alpha:1.0],  // flatForestGreenColor
-						[NSColor colorWithHue:(184.0 / 360.0)  saturation:( 10.0  / 100.0)  brightness:( 65.0 / 100.0)  alpha:1.0],  // flatGrayColor
-						[NSColor colorWithHue:(145.0 / 360.0)  saturation:( 77.0  / 100.0)  brightness:( 80.0 / 100.0)  alpha:1.0],  // flatGreenColor
-						[NSColor colorWithHue:( 74.0 / 360.0)  saturation:( 70.0  / 100.0)  brightness:( 78.0 / 100.0)  alpha:1.0],  // flatLimeColor
-						[NSColor colorWithHue:(283.0 / 360.0)  saturation:( 51.0  / 100.0)  brightness:( 71.0 / 100.0)  alpha:1.0],  // flatMagentaColor
-						[NSColor colorWithHue:(  5.0 / 360.0)  saturation:( 65.0  / 100.0)  brightness:( 47.0 / 100.0)  alpha:1.0],  // flatMaroonColor
-						[NSColor colorWithHue:(168.0 / 360.0)  saturation:( 86.0  / 100.0)  brightness:( 74.0 / 100.0)  alpha:1.0],  // flatMintColor
-						[NSColor colorWithHue:(210.0 / 360.0)  saturation:( 45.0  / 100.0)  brightness:( 37.0 / 100.0)  alpha:1.0],  // flatNavyBlueColor
-						[NSColor colorWithHue:( 28.0 / 360.0)  saturation:( 85.0  / 100.0)  brightness:( 90.0 / 100.0)  alpha:1.0],  // flatOrangeColor
-						[NSColor colorWithHue:(324.0 / 360.0)  saturation:( 49.0  / 100.0)  brightness:( 96.0 / 100.0)  alpha:1.0],  // flatPinkColor
-						[NSColor colorWithHue:(300.0 / 360.0)  saturation:( 45.0  / 100.0)  brightness:( 37.0 / 100.0)  alpha:1.0],  // flatPlumColor
-						[NSColor colorWithHue:(222.0 / 360.0)  saturation:( 24.0  / 100.0)  brightness:( 95.0 / 100.0)  alpha:1.0],  // flatPowderBlueColor
-						[NSColor colorWithHue:(253.0 / 360.0)  saturation:( 52.0  / 100.0)  brightness:( 77.0 / 100.0)  alpha:1.0],  // flatPurpleColor
-						[NSColor colorWithHue:(  6.0 / 360.0)  saturation:( 74.0  / 100.0)  brightness:( 91.0 / 100.0)  alpha:1.0],  // flatRedColor
-						[NSColor colorWithHue:( 42.0 / 360.0)  saturation:( 25.0  / 100.0)  brightness:( 94.0 / 100.0)  alpha:1.0],  // flatSandColor
-						[NSColor colorWithHue:(204.0 / 360.0)  saturation:( 76.0  / 100.0)  brightness:( 86.0 / 100.0)  alpha:1.0],  // flatSkyBlueColor
-						[NSColor colorWithHue:(195.0 / 360.0)  saturation:( 55.0  / 100.0)  brightness:( 51.0 / 100.0)  alpha:1.0],  // flatTealColor
-						[NSColor colorWithHue:(356.0 / 360.0)  saturation:( 53.0  / 100.0)  brightness:( 94.0 / 100.0)  alpha:1.0],  // flatWatermelonColor
-						[NSColor colorWithHue:( 48.0 / 360.0)  saturation:( 99.0  / 100.0)  brightness:(100.0 / 100.0)  alpha:1.0],  // flatYellowColor
-					];
-				});
-				
-				NSUInteger index = (NSUInteger)(round(drand48() * (double)(colors.count - 1)));
-				uniqueColor = [colors objectAtIndex:index];
-				uniqueColorData = [NSArchiver archivedDataWithRootObject:uniqueColor];
-				[self setPreference:uniqueColorData forKey:@"uniqueColor"];
-			}
+		NSData * uniqueColorData = [self preferenceForKey:@"uniqueColor"];
+		if (uniqueColorData) {
+			uniqueColor = [NSUnarchiver unarchiveObjectWithData:uniqueColorData];
+		} else {
+			uniqueColor = [CQRoomIconGenerator generateUniqueColor];
+			uniqueColorData = [NSArchiver archivedDataWithRootObject:uniqueColor];
+			[self setPreference:uniqueColorData forKey:@"uniqueColor"];
 		}
-		
 		
 		NSString * name = [(MVChatRoom *)self.target displayName];
-		if (name.length > 4) {
-			NSMutableString * s = [NSMutableString string];
-			NSUInteger length = name.length;
-			NSUInteger index = 0;
-			NSInteger charType = -1;
-			NSInteger prevCharType = -1; // -1 none, 0 lower, 1 upper, 2 punc, 3 number
-			// idevgames, iDevGames, macdev, php, fruitstand-invitational-dev, ##bitraf-3dprinting, BotTester99, /r/blah, asdf.asdf
-			
-			NSCharacterSet * numbers = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
-			NSCharacterSet * punctuation = [NSCharacterSet alphanumericCharacterSet].invertedSet;
-			NSCharacterSet * upper = [NSCharacterSet uppercaseLetterCharacterSet];
-			
-			while (index < length) {
-				unichar c = [name characterAtIndex:index];
-				
-				if ([numbers characterIsMember:c]) {
-					charType = 3;
-					[s appendFormat:@"%C", c];
-					
-				} else if ([punctuation characterIsMember:c]) {
-					charType = 2;
-					
-				} else {
-					if ([upper characterIsMember:c]) {
-						charType = 1;
-					} else {
-						charType = 0;
-					}
-					
-					
-					if (prevCharType != -1) {
-						if (prevCharType == charType) {
-							// skip
-						
-						} else if (prevCharType == 2) {
-							[s appendFormat:@"%C", c];
-							
-						} else if (prevCharType == 1 && charType == 0) {
-							// skip
-							
-						} else if (prevCharType == 0 && charType == 1) {
-							[s appendFormat:@"%C", c];
-							
-						} else {
-							[s appendFormat:@"%C", c];
-						}
-						
-					} else {
-						[s appendFormat:@"%C", c];
-					}
-				}
-				
-				index += 1;
-				prevCharType = charType;
-			}
-			
-			
-			if (s.length < 2 && name.length > 2) {
-				name = [name substringToIndex:MAX((NSUInteger)4, name.length)];
-			} else {
-				name = s;
-			}
-		}
-		
-		
-		NSAttributedString * as = nil;
-		CGFloat fontSize = 12.0;
-		
-		
-		do {
-			as = [[NSAttributedString alloc] initWithString:name attributes:@{
-				NSForegroundColorAttributeName : NSColor.whiteColor,
-				NSFontAttributeName : [NSFont systemFontOfSize:fontSize],
-			}];
-			
-			if (as.size.width > 30) {
-				if (fontSize > 9.0) {
-					fontSize -= 1.0;
-				} else {
-					name = [name substringToIndex:name.length - 1];
-					fontSize = 12.0;
-				}
-			} else {
-				break;
-			}
-		} while (YES);
-		
-		
-		image = [NSImage imageWithSize:NSMakeSize(32, 32) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-			[uniqueColor set];
-			[[NSBezierPath bezierPathWithRoundedRect:dstRect xRadius:4 yRadius:4] fill];
-			
-			
-			NSRect rect = NSZeroRect;
-			rect.size = as.size;
-			rect.origin.x = floor((dstRect.size.width - as.size.width) / 2.0);
-			rect.origin.y = floor((dstRect.size.height - as.size.height) / 2.0);
-			[as drawInRect:rect];
-			return YES;
-		}];
+		_uniqueIcon = [CQRoomIconGenerator iconOfSize:NSMakeSize(32, 32) forRoomName:name withColor:uniqueColor];
 	}
 	
-	
-	return image ?: [NSImage imageNamed:@"room"];
+	return _uniqueIcon;
 }
+
+
+- (NSImage *) icon {
+	NSImage * icon = self.customIcon;
+	
+	if (!icon) { // [NSUserDefaults.standardUserDefaults boolForKey:@"JVUseUniqueIconForChatPanels"]) {
+		icon = self.uniqueIcon;
+	}
+	
+	if (!icon) {
+		icon = [NSImage imageNamed:@"room"];
+	}
+	
+	return icon;
+}
+
 
 - (NSImage *) statusImage {
 	if( [_windowController isMemberOfClass:[JVTabbedChatWindowController class]] ) {

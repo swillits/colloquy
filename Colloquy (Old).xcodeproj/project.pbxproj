@@ -234,6 +234,7 @@
 		1CF8030F070C893500C9B54C /* libsilcclient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF8030D070C893500C9B54C /* libsilcclient.framework */; };
 		1CF80310070C894100C9B54C /* libsilc.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF8030C070C893500C9B54C /* libsilc.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1CF80311070C894100C9B54C /* libsilcclient.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF8030D070C893500C9B54C /* libsilcclient.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5D2E60EC1FB0DC3100951A69 /* CQRoomIconGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D2E60EB1FB0DC3100951A69 /* CQRoomIconGenerator.m */; };
 		5D3B84C91FAE28BD00B1D70C /* sidebarFavoritesTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D3B84C71FAE28BC00B1D70C /* sidebarFavoritesTemplate.png */; };
 		5D3B84CA1FAE28BD00B1D70C /* sidebarFavoritesTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D3B84C81FAE28BD00B1D70C /* sidebarFavoritesTemplate@2x.png */; };
 		5D3B84D01FAE2CDE00B1D70C /* JVSideStatusButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3B84CF1FAE2CDD00B1D70C /* JVSideStatusButton.m */; };
@@ -752,6 +753,8 @@
 		1CF79CBD07AC77E600696918 /* JVChatTranscript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JVChatTranscript.m; path = Models/JVChatTranscript.m; sourceTree = "<group>"; };
 		1CF8030C070C893500C9B54C /* libsilc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = libsilc.framework; sourceTree = "<group>"; };
 		1CF8030D070C893500C9B54C /* libsilcclient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = libsilcclient.framework; sourceTree = "<group>"; };
+		5D2E60EA1FB0DC3100951A69 /* CQRoomIconGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CQRoomIconGenerator.h; path = Controllers/CQRoomIconGenerator.h; sourceTree = "<group>"; };
+		5D2E60EB1FB0DC3100951A69 /* CQRoomIconGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CQRoomIconGenerator.m; path = Controllers/CQRoomIconGenerator.m; sourceTree = "<group>"; };
 		5D3B84C71FAE28BC00B1D70C /* sidebarFavoritesTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sidebarFavoritesTemplate.png; path = ../../../Desktop/sidebarFavoritesTemplate.png; sourceTree = "<group>"; };
 		5D3B84C81FAE28BD00B1D70C /* sidebarFavoritesTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sidebarFavoritesTemplate@2x.png"; path = "../../../Desktop/sidebarFavoritesTemplate@2x.png"; sourceTree = "<group>"; };
 		5D3B84CE1FAE2CDD00B1D70C /* JVSideStatusButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JVSideStatusButton.h; path = Views/JVSideStatusButton.h; sourceTree = "<group>"; };
@@ -1540,6 +1543,8 @@
 				5DFE89501FAFF9B90064CB61 /* CQChatRoomMembersPopover.h */,
 				5DFE89511FAFF9B90064CB61 /* CQChatRoomMembersPopover.m */,
 				5DFE89531FAFF9F50064CB61 /* CQChatRoomMembersPopover.xib */,
+				5D2E60EA1FB0DC3100951A69 /* CQRoomIconGenerator.h */,
+				5D2E60EB1FB0DC3100951A69 /* CQRoomIconGenerator.m */,
 				5DF1F69E1FAEEDFE003F66B1 /* JVClassicChatWindowController.h */,
 				5DF1F69F1FAEEDFE003F66B1 /* JVClassicChatWindowController.m */,
 				1C710A0009F23730007B4515 /* JVSidebarChatWindowController.m */,
@@ -2341,6 +2346,7 @@
 				1C0730D406777678008D8AD9 /* ESFloater.m in Sources */,
 				1C0730E50677A63B008D8AD9 /* NSImageAdditions.m in Sources */,
 				5D3B84F31FAE3E3400B1D70C /* CQSendHistory.m in Sources */,
+				5D2E60EC1FB0DC3100951A69 /* CQRoomIconGenerator.m in Sources */,
 				1C2391AA0677E6B7000E89A7 /* JVChatTabItem.m in Sources */,
 				1C96E93F06AADBBD0013B0A9 /* JVTranscriptPreferencesViewController.m in Sources */,
 				1C6A112B06BC0C9E00A66340 /* NSAttributedStringMoreAdditions.m in Sources */,

@@ -16,6 +16,7 @@ COLLOQUY_EXPORT
 	NSUInteger _joinCount;
 	NSRegularExpression *_membersRegex;
 	NSImage * _customIcon;
+	NSImage * _uniqueIcon;
 }
 - (void) joined;
 - (void) parting;
@@ -33,6 +34,14 @@ COLLOQUY_EXPORT
 
 - (void) handleRoomMessageNotification:(NSNotification *) notification;
 
+
+//! Returns the customIcon (if set), a unique one (if prefs set so), or the generic room icon
+@property (readonly) NSImage * icon;
+
+//! Returns a unique generated icon using a stable-across-launches color 
+@property (readonly) NSImage * uniqueIcon;
+
+//! A settable icon for the room
 @property (readwrite, copy) NSImage * customIcon;
 
 @end
