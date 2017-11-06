@@ -40,7 +40,7 @@
                     <toolbarItem implicitItemIdentifier="5601EEF6-6F7F-442D-830C-A9FD3529D154" explicitItemIdentifier="RoomSelector" label="Switch" paletteLabel="Switch" tag="-1" id="anh-iM-Uw0">
                         <nil key="toolTip"/>
                         <size key="minSize" width="40" height="32"/>
-                        <size key="maxSize" width="163" height="32"/>
+                        <size key="maxSize" width="10000" height="32"/>
                         <customView key="view" id="Oze-qM-DSB" customClass="CQStreamlinedRoomSelectorView">
                             <rect key="frame" x="0.0" y="14" width="163" height="32"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

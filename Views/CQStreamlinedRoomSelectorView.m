@@ -349,7 +349,7 @@
 		if ([chat isKindOfClass:[JVChatRoomPanel class]]) {
 			NSBezierPath * path = [NSBezierPath bezierPath];
 			
-			[path moveToPoint:NSMakePoint( NSMaxX(chatRect) - 8, NSMidY(chatRect) - 3)];
+			[path moveToPoint:NSMakePoint( NSMaxX(chatRect) - 6, NSMidY(chatRect) - 3)];
 			[path relativeLineToPoint:NSMakePoint( 4, 0 )];
 			[path relativeLineToPoint:NSMakePoint( -2, -3 )];
 			
